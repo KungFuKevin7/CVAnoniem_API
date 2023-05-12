@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using REST_API.Model;
+using REST_API.Repository;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,17 +10,17 @@ using System.Text.Json.Serialization;
 namespace REST_API.Controller
 {
     [ApiController]
-    [Route("api/[action]")]
-    public class MyController : ControllerBase, IRepository<User>
+    [Route("api/User/[action]")]
+    public class UserController
     {
-
+        public UserRepository UserRepo = new UserRepository();
         public static List<User> userCollection = new List<User>();
 
         [HttpGet]
         [ActionName("GetUsersList")]
         public string Get() 
         {
-            userCollection = QueryRepository.GetUsers();
+            userCollection = UserRepo.Get();
             var json = JsonSerializer.Serialize(userCollection);
             return json;
         }
@@ -30,9 +31,8 @@ namespace REST_API.Controller
         {
             foreach (var user in users)
             {
-                Console.WriteLine(user.EmailAddress);
                 userCollection.Add(user);
-                QueryRepository.AddUser(user);
+                UserRepo.Add(user);
             }
         }
 
@@ -40,7 +40,7 @@ namespace REST_API.Controller
         [ActionName("ModifyUser")]
         public void Update([FromBody]User user, int id)
         {
-            QueryRepository.UpdateUser(user, id);
+            UserRepo.Update(user, id);
         }
 
         [HttpDelete]
@@ -48,14 +48,14 @@ namespace REST_API.Controller
         public void Delete(int id)
         {
             var element = userCollection.Find(user => user.UserID == id);
-            QueryRepository.RemoveUser(id);
+            UserRepo.Delete(id);
         }
 
         [HttpGet]
         [ActionName("UserExist")]
         public string UserExist(string email, string password)
         {
-            bool userfound = QueryRepository.UserExist(email, password);
+            bool userfound = UserRepository.UserExist(email, password);
             if (userfound)
             {
                 return "User Already Exist";

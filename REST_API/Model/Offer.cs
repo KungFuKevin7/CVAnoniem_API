@@ -6,7 +6,7 @@ namespace REST_API.Model
     public class Offer
     {
         [Bindable(true)]
-        public int Id { get; set; }
+        public int OfferId { get; set; }
 
         [Bindable(true)]
         public string WorkField { get; set; }
@@ -18,7 +18,7 @@ namespace REST_API.Model
         public string Province { get; set; }
 
         [Bindable(true)]
-        public bool JobSeekerID { get; set; }
+        public int JobSeekerID { get; set; }
 
         [JsonConstructor]
         public Offer() 
