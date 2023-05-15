@@ -48,7 +48,15 @@ namespace REST_API.Repository
 
         public Message GetByID(int id)
         {
-            throw new NotImplementedException();
+            string Query = $@"SELECT * FROM Message 
+                              WHERE MessageID = @MessageID;";
+            Message message = con.QuerySingle<Message>(Query,
+                new
+                {
+                    MessageID = id
+                });
+            con.Close();
+            return message;
         }
 
         public void Update(Message updatedObject, int id)
