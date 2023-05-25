@@ -7,22 +7,22 @@ namespace REST_API.Repository
     public class PermissionRepository : IRepository<Permission>
     {
         /// <summary>
-        /// Using à single instance to connect to database.
+        /// Using a single instance to connect to database.
         /// </summary>
-        public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
+        public static MySqlConnection con = DBConnection.getInstance()
+                                                  .GetConnectionMSQL();
 
         public void Add(Permission permission)
         {
             string Query = $@"INSERT INTO Permissions(
-                            ResumeID, EmployerID, ShareFullResume)
-                            VALUES (@ResumeID, @EmployerID, @ShareFullResume);";
+                            ResumeID, EmployerID)
+                            VALUES (@ResumeID, @EmployerID);";
 
             con.QueryFirstOrDefault<Permission>(Query,
                 new
                 {
                     ResumeID = permission.ResumeID,
-                    EmployerID = permission.EmployerID,
-                    ShareFullResume = permission.ShareFullResume
+                    EmployerID = permission.EmployerID
                 });
             con.Close();
         }
@@ -32,7 +32,7 @@ namespace REST_API.Repository
             string Query = $@"DELETE FROM Permissions
                               WHERE PermissionID = @PermissionID";
 
-            con.Execute(Query, new { MessageID = id });
+            con.Execute(Query, new { PermissionID = id });
             con.Close();
         }
 
@@ -44,17 +44,17 @@ namespace REST_API.Repository
             return permissions;
         }
 
-        public Permission GetByID(int id)
+        public List<Permission> GetByID(int id)
         {
             string Query = $@"SELECT * FROM Permissions 
                               WHERE PermissionID = @PermissionID;";
-            Permission permission = con.QuerySingle<Permission>(Query,
+            IEnumerable<Permission> permission = con.Query<Permission>(Query,
                 new
                 {
-                    MessageID = id
+                    PermissionID = id
                 });
             con.Close();
-            return permission;
+            return permission.ToList();
         }
 
         public void Update(Permission updatedObject, int id)

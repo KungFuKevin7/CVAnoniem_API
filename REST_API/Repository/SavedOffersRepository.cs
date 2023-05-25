@@ -48,17 +48,34 @@ namespace REST_API.Repository
             return savedOffers;
         }
 
-        public SavedOffers GetByID(int id)
+        public List<Offer> GetByID(int id)
         {
-            string Query = $@"SELECT * FROM SavedOffers
-                              WHERE EmployerID = @EmployerID;";
-            SavedOffers savedOffers =
-                con.QuerySingle<SavedOffers>(Query, new
+            string Query = $@"SELECT O.* FROM Offer O
+                              INNER JOIN SavedOffers S
+                              ON O.OfferID = S.OfferID
+                              WHERE S.EmployerID = @id";
+            IEnumerable<Offer> savedOffers =
+                con.Query<Offer>(Query, new
                 {
-                    EmployerID = id
+                    id = id
                 }) ;
             con.Close();
-            return savedOffers;
+            return savedOffers.ToList();
+        }
+
+        public int GetByID(int userid, int offerid)
+        {
+            string Query = $@"SELECT SavedID 
+                              FROM SavedOffers
+                              WHERE EmployerID = @userid
+                              AND OfferID = @offerid";
+            int ID = con.ExecuteScalar<int>(Query, new
+            {
+                userid = userid,
+                offerid = offerid
+            });
+            con.Close();
+            return ID;
         }
 
         public void Update(SavedOffers updatedObject, int id)
@@ -66,6 +83,9 @@ namespace REST_API.Repository
             throw new NotImplementedException();
         }
 
-  
+        List<SavedOffers> IRepository<SavedOffers>.GetByID(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

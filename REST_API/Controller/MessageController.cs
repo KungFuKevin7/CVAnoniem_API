@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace REST_API.Controller
 {
     [ApiController]
-    [Route("api/Message/[action]")]
+    [Route("api/[action]")]
     public class MessageController
     {
         public static MessageRepository MessageRepo = new MessageRepository();
@@ -17,7 +17,7 @@ namespace REST_API.Controller
         public static List<Message> messageCollection = new List<Message>();
 
         [HttpPost]
-        [ActionName("AddMessage")]
+        [ActionName("message")]
         public void Add([FromBody] Message message)
         {
             messageCollection.Add(message);
@@ -25,14 +25,14 @@ namespace REST_API.Controller
         }
 
         [HttpDelete]
-        [ActionName("DeleteMessage")]
+        [ActionName("message")]
         public void Delete(int id)
         {
             MessageRepo.Delete(id);
         }
 
         [HttpGet]
-        [ActionName("GetMessageList")]
+        [ActionName("message/all-messages")]
         public string GetMessageList()
         {
             messageCollection = MessageRepo.Get();
@@ -41,7 +41,7 @@ namespace REST_API.Controller
         }
 
         [HttpGet]
-        [ActionName("GetMessageByID")]
+        [ActionName("message")]
         public string GetMessageByID(int id)
         {
             var json = JsonSerializer.Serialize(MessageRepo.GetByID(id));

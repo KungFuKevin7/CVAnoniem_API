@@ -6,8 +6,9 @@ namespace REST_API.Model
     public class Offer
     {
         [Bindable(true)]
-        public int OfferId { get; set; }
-
+        public int OfferID { get; set; }
+        [Bindable(true)]
+        public string Title { get; set; }
         [Bindable(true)]
         public string WorkField { get; set; }
 

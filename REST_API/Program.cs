@@ -9,13 +9,25 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
+        
         builder.Services.AddControllersWithViews();
+        builder.Services.AddCors(options => {
+            options.AddDefaultPolicy( policy =>
+            {
+                policy.AllowAnyHeader()
+                .AllowAnyOrigin()
+                .AllowAnyMethod();
+            });
+        });
+
         var app = builder.Build();
 
+        
         //app.Map
         //app.MapGet("/", () => "Hello World!");
 
         app.UseHttpsRedirection();
+        app.UseCors();
         app.MapControllers();
         app.Run();
     }

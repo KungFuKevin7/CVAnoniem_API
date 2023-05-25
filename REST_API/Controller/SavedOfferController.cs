@@ -6,7 +6,7 @@ using REST_API.Repository;
 namespace REST_API.Controller
 {
     [ApiController]
-    [Route("api/SavedOffers/[action]")]
+    [Route("api/[action]")]
     public class SavedOfferController
     {
         public static SavedOffersRepository SavedOfferRepo =
@@ -16,7 +16,7 @@ namespace REST_API.Controller
                                         new List<SavedOffers>();
 
         [HttpPost]
-        [ActionName("AddSavedOffer")]
+        [ActionName("saved-offer")]
         public void Add([FromBody]SavedOffers offer)
         {
             savedOffers.Add(offer);
@@ -24,15 +24,16 @@ namespace REST_API.Controller
         }
 
         [HttpDelete]
-        [ActionName("DeleteSavedOffer")]
-        public void Delete(int id)
+        [ActionName("saved-offer")]
+        public void Delete(int userid, int offerid)
         {
-            SavedOfferRepo.Delete(id);
+            int IDtoDelete = SavedOfferRepo.GetByID(userid, offerid);
+            SavedOfferRepo.Delete(IDtoDelete);
         }
 
 
         [HttpGet]
-        [ActionName("GetSavedOffers")]
+        [ActionName("saved-offer/full-saved-offers-list")]
         public string GetSavedOffersList()
         {
             savedOffers = SavedOfferRepo.Get();
@@ -41,13 +42,20 @@ namespace REST_API.Controller
         }
 
         [HttpGet]
-        [ActionName("GetSavedOfferByID")]
-        public string GetOfferByID(int id)
+        [ActionName("saved-offer")]
+        public string GetOfferByID(int userid)
         {
-            var json = JsonSerializer.Serialize(SavedOfferRepo.GetByID(id));
+            var json = JsonSerializer.Serialize(SavedOfferRepo.GetByID(userid));
             return json;
         }
 
+        [HttpGet]
+        [ActionName("saved-offer/user-saved-offer")]
+        public string GetOfferByID(int userid, int offerid)
+        {
+            var json = JsonSerializer.Serialize(SavedOfferRepo.GetByID(userid,offerid));
+            return json;
+        }
     }
 }
 

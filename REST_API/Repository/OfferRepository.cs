@@ -8,23 +8,24 @@ namespace REST_API.Repository
     {
 
         /// <summary>
-        /// Using à single instance to connect to database.
+        /// Using a single instance to connect to database.
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
         public void Add(Offer offer)
         {
             string Query = $@"INSERT INTO Offer(
-                            WorkField, Description, Province, JobSeekerID)
-                            VALUES (@WorkField, @Description, @Province, @JobSeekerID);";
+                            WorkField, Title, Description, Province, JobSeekerID)
+                            VALUES (@WorkField, @Title, @Description, @Province, @JobSeekerID);";
 
             con.QueryFirstOrDefault<Offer>(Query,
                 new
                 {
-                    offer.WorkField,
-                    offer.Description,
-                    offer.Province,
-                    offer.JobSeekerID
+                    WorkField = offer.WorkField,
+                    Title = offer.Title,
+                    Description = offer.Description,
+                    Province = offer.Province,
+                    JobSeekerID = offer.JobSeekerID
                 });
             con.Close();
         }
@@ -37,16 +38,16 @@ namespace REST_API.Repository
             return Offers;
         }
 
-        public Offer GetByID(int id)
+        public List<Offer> GetByID(int id)
         {
-            string Query = $@"SELECT * FROM Offer WHERE OfferID = @OfferID;";
-            Offer offer = con.QuerySingle<Offer>(Query,
+            string Query = $@"SELECT * FROM Offer WHERE JobSeekerID = @JobSeekerID;";
+            IEnumerable<Offer> offer = con.Query<Offer>(Query,
                 new
                 {
-                    OfferID = id
+                    JobSeekerID = id
                 });
             con.Close();
-            return offer;
+            return offer.ToList();
         }
 
         public void Delete(int id)
@@ -75,6 +76,27 @@ namespace REST_API.Repository
                                 OfferID = id
                             });
             con.Close();
+        }
+
+        public bool UserHasOffer(int JobseekerID) 
+        {
+            string Query = $@"SELECT COUNT(*) 
+                             FROM Offer
+                             WHERE JobseekerID = @JobseekerID";
+            int Result = con.ExecuteScalar<int>(Query, new
+            {
+                JobSeekerID = JobseekerID
+            });
+
+            switch (Result)
+            {
+                case 0:
+                default:
+                    return false;
+                case 1:
+                    return true ;
+            }
+
         }
 
     }

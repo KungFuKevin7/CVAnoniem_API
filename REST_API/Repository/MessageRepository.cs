@@ -8,7 +8,7 @@ namespace REST_API.Repository
     public class MessageRepository : IRepository<Message>
     {
         /// <summary>
-        /// Using à single instance to connect to database.
+        /// Using a single instance to connect to database.
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
@@ -46,17 +46,17 @@ namespace REST_API.Repository
             return Messages;
         }
 
-        public Message GetByID(int id)
+        public List<Message> GetByID(int id)
         {
-            string Query = $@"SELECT * FROM Message 
-                              WHERE MessageID = @MessageID;";
-            Message message = con.QuerySingle<Message>(Query,
+               string Query = $@"SELECT * FROM Message 
+                              WHERE JobseekerID = @JobSeekerID;";
+            IEnumerable<Message> message = con.Query<Message>(Query,
                 new
                 {
-                    MessageID = id
+                    JobseekerID = id
                 });
             con.Close();
-            return message;
+            return message.ToList();
         }
 
         public void Update(Message updatedObject, int id)

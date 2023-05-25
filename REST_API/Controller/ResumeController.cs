@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace REST_API.Controller
 {
     [ApiController]
-    [Route("api/Resume/[action]")]
+    [Route("api/[action]")]
     public class ResumeController
     {
         public static ResumeRepository ResumeRepo = new ResumeRepository();
@@ -15,7 +15,7 @@ namespace REST_API.Controller
         public static List<Resume> resumeCollection = new List<Resume>();
 
         [HttpPost]
-        [ActionName("AddResume")]
+        [ActionName("resume")]
         public void Add([FromBody] Resume resume)
         {
             resumeCollection.Add(resume);
@@ -23,21 +23,21 @@ namespace REST_API.Controller
         }
 
         [HttpDelete]
-        [ActionName("RemoveResume")]
+        [ActionName("resume")]
         public void Delete(int id)
         {
             ResumeRepo.Delete(id);
         }
 
         [HttpPut]
-        [ActionName("UpdateResume")]
+        [ActionName("resume")]
         public void Update(Resume updatedResume, int id)
         {
             ResumeRepo.Update(updatedResume, id);
         }
 
         [HttpGet]
-        [ActionName("GetAllResume")]
+        [ActionName("resume/full-resume-list")]
         public string GetResumeList()
         {
             resumeCollection = ResumeRepo.Get();
@@ -46,7 +46,7 @@ namespace REST_API.Controller
         }
 
         [HttpGet]
-        [ActionName("GetResume")]
+        [ActionName("resume")]
         public string GetResumeByID(int id)
         {
             var json = JsonSerializer.Serialize(ResumeRepo.GetByID(id));

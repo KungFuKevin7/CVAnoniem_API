@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace REST_API.Controller
 {
     [ApiController]
-    [Route("api/Permission/[action]")]
+    [Route("api/[action]")]
     public class PermissionController
     {
         public static PermissionRepository PermissionRepo = 
@@ -17,7 +17,7 @@ namespace REST_API.Controller
                                            new List<Permission>();
 
         [HttpPost]
-        [ActionName("AddPermission")]
+        [ActionName("permission")]
         public void Add([FromBody] Permission p)
         {
             Permissions.Add(p);
@@ -25,21 +25,21 @@ namespace REST_API.Controller
         }
 
         [HttpDelete]
-        [ActionName("RemovePermission")]
+        [ActionName("permission")]
         public void Delete(int id)
         {
             PermissionRepo.Delete(id);
         }
 
         [HttpPut]
-        [ActionName("UpdatePermission")]
+        [ActionName("permission")]
         public void Update(Permission permission, int id)
         {
             PermissionRepo.Update(permission, id);
         }
 
         [HttpGet]
-        [ActionName("GetAllPermissions")]
+        [ActionName("permission/all-permissions")]
         public string GetPermissionsList()
         {
             Permissions = PermissionRepo.Get();
@@ -48,7 +48,7 @@ namespace REST_API.Controller
         }
 
         [HttpGet]
-        [ActionName("GetPermissions")]
+        [ActionName("permission")]
         public string GetPermissionsByID(int id)
         {
             var json = JsonSerializer.Serialize(PermissionRepo.GetByID(id));

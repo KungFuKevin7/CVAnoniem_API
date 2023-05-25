@@ -10,14 +10,14 @@ using System.Text.Json.Serialization;
 namespace REST_API.Controller
 {
     [ApiController]
-    [Route("api/User/[action]")]
+    [Route("api/[action]")]
     public class UserController
     {
         public UserRepository UserRepo = new UserRepository();
         public static List<User> userCollection = new List<User>();
 
         [HttpGet]
-        [ActionName("GetUsersList")]
+        [ActionName("user")]
         public string Get() 
         {
             userCollection = UserRepo.Get();
@@ -26,7 +26,7 @@ namespace REST_API.Controller
         }
 
         [HttpPost]
-        [ActionName("AddUser")]
+        [ActionName("user")]
         public void Add([FromBody] User[] users)
         {
             foreach (var user in users)
@@ -37,22 +37,22 @@ namespace REST_API.Controller
         }
 
         [HttpPut]
-        [ActionName("ModifyUser")]
+        [ActionName("user")]
         public void Update([FromBody]User user, int id)
         {
             UserRepo.Update(user, id);
         }
 
         [HttpDelete]
-        [ActionName("RemoveUser")]
+        [ActionName("user")]
         public void Delete(int id)
         {
-            var element = userCollection.Find(user => user.UserID == id);
+            //var element = userCollection.Find(user => user.UserID == id);
             UserRepo.Delete(id);
         }
 
         [HttpGet]
-        [ActionName("UserExist")]
+        [ActionName("user/user-exist")]
         public string UserExist(string email, string password)
         {
             bool userfound = UserRepository.UserExist(email, password);

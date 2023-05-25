@@ -46,17 +46,17 @@ namespace REST_API.Repository
             return ResumeList;
         }
 
-        public Resume GetByID(int id)
+        public List<Resume> GetByID(int id)
         {
             string Query = $@"SELECT * FROM Resume
                               WHERE ResumeID = @ResumeID;";
 
-            Resume UsersList = con.QuerySingle<Resume>(Query, new
+            IEnumerable<Resume> UsersList = con.Query<Resume>(Query, new
             {
                 ResumeID = id
             });
             con.Close();
-            return UsersList;
+            return UsersList.ToList();
         }
 
         public void Update(Resume updatedResume, int id)

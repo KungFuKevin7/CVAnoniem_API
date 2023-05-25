@@ -80,16 +80,18 @@ namespace REST_API.Repository
             con.Close();
         }
 
-        public User GetByID(int id)
+        public List<User> GetByID(int id)
         {
             string Query = $@"SELECT * FROM Users WHERE UserID = @UserID;";
 
-            User UsersList = con.QuerySingle<User>(Query, new
+            IEnumerable<User> UsersList = con.Query<User>(Query, new
             {
                 UserID = id
             });
             con.Close();
-            return UsersList;
+            return UsersList.ToList();
         }
+
+
     }
 }

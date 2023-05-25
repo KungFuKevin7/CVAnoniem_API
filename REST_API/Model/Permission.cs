@@ -11,8 +11,7 @@ namespace REST_API.Model
         public int ResumeID { get; set; }
         [Bindable(true)]
         public int EmployerID { get; set; }
-        [Bindable(true)]
-        public bool ShareFullResume { get; set; }
+
 
         [JsonConstructor]
         public Permission()
