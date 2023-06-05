@@ -8,7 +8,7 @@ namespace REST_API.Model
         [Bindable(true)]
         public int PermissionID { get; set; }
         [Bindable(true)]
-        public int ResumeID { get; set; }
+        public int OfferID { get; set; }
         [Bindable(true)]
         public int EmployerID { get; set; }
 

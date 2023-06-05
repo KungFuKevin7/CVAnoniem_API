@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
 using REST_API.Model;
+using System;
 
 namespace REST_API.Repository
 {
@@ -59,9 +60,10 @@ namespace REST_API.Repository
             con.Close();
         }
 
-        public void Update(Offer offer, int id)
+        public void Update(Offer offer, int offerID)
         {
             string Query = $@"UPDATE Offer SET
+                             Title = @Title,
                              WorkField = @WorkField,
                              Description = @Description,
                              Province = @Province
@@ -70,17 +72,18 @@ namespace REST_API.Repository
             con.Execute(Query,
                             new
                             {
+                                offer.Title,
                                 offer.WorkField,
                                 offer.Description,
                                 offer.Province,
-                                OfferID = id
+                                offerID
                             });
             con.Close();
         }
 
-        public bool UserHasOffer(int JobseekerID) 
+        public int UserHasOffer(int JobseekerID) 
         {
-            string Query = $@"SELECT COUNT(*) 
+            string Query = $@"SELECT OfferID 
                              FROM Offer
                              WHERE JobseekerID = @JobseekerID";
             int Result = con.ExecuteScalar<int>(Query, new
@@ -88,16 +91,43 @@ namespace REST_API.Repository
                 JobSeekerID = JobseekerID
             });
 
-            switch (Result)
-            {
-                case 0:
-                default:
-                    return false;
-                case 1:
-                    return true ;
-            }
+            return Result;
 
         }
+        public void AddOrUpdate(Offer offer) 
+        {
+            List<Offer> userHasResume = GetByID(offer.JobSeekerID);
+            if (userHasResume.Count > 0)
+            {
+                Update(offer, userHasResume[0].OfferID);
+            }
+            else
+            {
+                Add(offer);
+            }
+        }
 
+        public List<Offer> getOffersByName(string input) 
+        {
+            input = $"%{input}%";
+
+            string Query = $@"SELECT * 
+                              FROM Offer
+                              WHERE Title LIKE @input
+                              OR
+                              WorkField LIKE @input
+                              OR
+                              Description LIKE @input
+                              OR
+                              Province LIKE @input;";
+            IEnumerable<Offer> offer = con.Query<Offer>(Query,
+                new
+                {
+                    input = input
+                });
+            con.Close();
+            return offer.ToList();
+        }
+    
     }
 }

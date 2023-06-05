@@ -14,14 +14,15 @@ namespace REST_API.Repository
 
         public void Add(Permission permission)
         {
+
             string Query = $@"INSERT INTO Permissions(
-                            ResumeID, EmployerID)
-                            VALUES (@ResumeID, @EmployerID);";
+                            OfferID, EmployerID)
+                            VALUES (@OfferID, @EmployerID);";
 
             con.QueryFirstOrDefault<Permission>(Query,
                 new
                 {
-                    ResumeID = permission.ResumeID,
+                    OfferID = permission.OfferID,
                     EmployerID = permission.EmployerID
                 });
             con.Close();

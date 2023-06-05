@@ -46,14 +46,14 @@ namespace REST_API.Repository
             return ResumeList;
         }
 
-        public List<Resume> GetByID(int id)
+        public List<Resume> GetByID(int Offerid)
         {
             string Query = $@"SELECT * FROM Resume
-                              WHERE ResumeID = @ResumeID;";
+                              WHERE OfferID = @OfferID;";
 
             IEnumerable<Resume> UsersList = con.Query<Resume>(Query, new
             {
-                ResumeID = id
+                Offerid = Offerid
             });
             con.Close();
             return UsersList.ToList();

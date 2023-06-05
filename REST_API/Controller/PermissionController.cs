@@ -2,7 +2,6 @@
 using REST_API.Model;
 using REST_API.Repository;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace REST_API.Controller
 {
@@ -13,14 +12,19 @@ namespace REST_API.Controller
         public static PermissionRepository PermissionRepo = 
                                            new PermissionRepository();
 
+        public static OfferRepository OfferRepo =
+                                           new OfferRepository();
+        
         public static List<Permission> Permissions =
                                            new List<Permission>();
 
         [HttpPost]
         [ActionName("permission")]
-        public void Add([FromBody] Permission p)
+        public void Add([FromBody] Permission p, int senderid)
         {
-            Permissions.Add(p);
+            int offerid = OfferRepo.GetByID(senderid).ElementAt(0).OfferID;
+            p.OfferID = offerid;
+            //Permissions.Add(p);
             PermissionRepo.Add(p);
         }
 

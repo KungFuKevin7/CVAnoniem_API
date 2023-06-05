@@ -42,9 +42,9 @@ namespace REST_API.Controller
 
         [HttpGet]
         [ActionName("message")]
-        public string GetMessageByID(int id)
+        public string GetMessageByID(int userid)
         {
-            var json = JsonSerializer.Serialize(MessageRepo.GetByID(id));
+            var json = JsonSerializer.Serialize(MessageRepo.GetByID(userid));
             return json;
         }
     }

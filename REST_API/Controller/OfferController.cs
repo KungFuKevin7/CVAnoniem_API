@@ -11,7 +11,6 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-
 namespace REST_API.Controller
 {
     [ApiController]
@@ -26,11 +25,9 @@ namespace REST_API.Controller
         [ActionName("offer")]
         public HttpStatusCode Add([FromBody]Offer offer)
         {
-            offersCollection.Add(offer);
-            OfferRepo.Add(offer);
-            Response.Headers.Add("Access-Control-Allow-Origin", "true");
-
+            OfferRepo.AddOrUpdate(offer);
             return HttpStatusCode.OK;
+
         }
 
         [HttpDelete]
@@ -42,9 +39,9 @@ namespace REST_API.Controller
 
         [HttpPut]
         [ActionName("offer")]
-        public void Update(Offer updatedOffer, int id)
+        public void Update(Offer updatedOffer)
         {
-            OfferRepo.Update(updatedOffer, id);
+            OfferRepo.AddOrUpdate(updatedOffer);
         }
 
         [HttpGet]
@@ -53,8 +50,6 @@ namespace REST_API.Controller
         {
             offersCollection = OfferRepo.Get();
             var json = JsonSerializer.Serialize(offersCollection);
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
             return json;
         }
 
@@ -63,14 +58,22 @@ namespace REST_API.Controller
         public string GetOfferByID(int userid) 
         {
             var json = JsonSerializer.Serialize(OfferRepo.GetByID(userid));
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-
             return json;
         }
 
         [HttpGet]
+        [ActionName("offer/search-offers")]
+        public string GetOfferByInput(string query)
+        {
+            var json = JsonSerializer.Serialize(OfferRepo.getOffersByName(query));
+
+            return json;
+        }
+
+
+        [HttpGet]
         [ActionName("offer/user-has-offer")]
-        public bool GetUserHasOffer(int userid) 
+        public int GetUserHasOffer(int userid) 
         {
             return OfferRepo.UserHasOffer(userid);
         }
