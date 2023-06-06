@@ -24,7 +24,7 @@ namespace REST_API.Repository
                     EmployerID = offer.EmployerID,
                     OfferID = offer.OfferID,
                 });
-            con.Close();
+            //con.Close();
         }
 
         public void Delete(int SavedID)
@@ -36,7 +36,7 @@ namespace REST_API.Repository
             { 
                  SavedID = SavedID,
             });
-            con.Close();
+            //con.Close();
         }
 
         public List<SavedOffers> Get()
@@ -44,7 +44,7 @@ namespace REST_API.Repository
             string Query = $@"SELECT * FROM SavedOffers;";
             List<SavedOffers> savedOffers = 
                 con.Query<SavedOffers>(Query).ToList();
-            con.Close();
+            //con.Close();
             return savedOffers;
         }
 
@@ -59,7 +59,7 @@ namespace REST_API.Repository
                 {
                     id = id
                 }) ;
-            con.Close();
+            //con.Close();
             return savedOffers.ToList();
         }
 
@@ -74,7 +74,7 @@ namespace REST_API.Repository
                 userid = userid,
                 offerid = offerid
             });
-            con.Close();
+            //con.Close();
             return ID;
         }
 

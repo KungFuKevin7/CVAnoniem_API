@@ -28,14 +28,14 @@ namespace REST_API.Repository
                     Province = offer.Province,
                     JobSeekerID = offer.JobSeekerID
                 });
-            con.Close();
+            //con.Close();
         }
 
         public List<Offer> Get()
         {
             string Query = $@"SELECT * FROM Offer;";
             List<Offer> Offers = con.Query<Offer>(Query).ToList();
-            con.Close();
+            //con.Close();
             return Offers;
         }
 
@@ -47,7 +47,7 @@ namespace REST_API.Repository
                 {
                     JobSeekerID = id
                 });
-            con.Close();
+            //con.Close();
             return offer.ToList();
         }
 
@@ -57,7 +57,7 @@ namespace REST_API.Repository
                               WHERE OfferID = @OfferID";
 
             con.Execute(Query, new { OfferID = id });
-            con.Close();
+            //con.Close();
         }
 
         public void Update(Offer offer, int offerID)
@@ -78,7 +78,7 @@ namespace REST_API.Repository
                                 offer.Province,
                                 offerID
                             });
-            con.Close();
+           //con.Close();
         }
 
         public int UserHasOffer(int JobseekerID) 
@@ -125,7 +125,7 @@ namespace REST_API.Repository
                 {
                     input = input
                 });
-            con.Close();
+            //con.Close();
             return offer.ToList();
         }
     

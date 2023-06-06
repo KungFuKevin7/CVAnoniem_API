@@ -25,7 +25,7 @@ namespace REST_API.Repository
                     OfferID = permission.OfferID,
                     EmployerID = permission.EmployerID
                 });
-            con.Close();
+            //con.Close();
         }
 
         public void Delete(int id)
@@ -34,14 +34,14 @@ namespace REST_API.Repository
                               WHERE PermissionID = @PermissionID";
 
             con.Execute(Query, new { PermissionID = id });
-            con.Close();
+            //con.Close();
         }
 
         public List<Permission> Get()
         {
             string Query = $@"SELECT * FROM Permissions;";
             List<Permission> permissions = con.Query<Permission>(Query).ToList();
-            con.Close();
+            //con.Close();
             return permissions;
         }
 
@@ -54,7 +54,7 @@ namespace REST_API.Repository
                 {
                     PermissionID = id
                 });
-            con.Close();
+            //con.Close();
             return permission.ToList();
         }
 

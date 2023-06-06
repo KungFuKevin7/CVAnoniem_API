@@ -51,7 +51,7 @@ namespace REST_API.Repository
                     user.Password,
                     user.PhoneNumber
                 });
-            con.Close();
+            //con.Close();
         }
 
         public void Update(User user, int id)
@@ -68,7 +68,7 @@ namespace REST_API.Repository
                                 user.Password,
                                 UserID = id
                             });
-            con.Close();
+           //con.Close();
         }
 
         public void Delete(int id)
@@ -88,7 +88,7 @@ namespace REST_API.Repository
             {
                 UserID = id
             });
-            con.Close();
+            //con.Close();
             return UsersList.ToList();
         }
 

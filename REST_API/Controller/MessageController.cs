@@ -18,7 +18,7 @@ namespace REST_API.Controller
 
         [HttpPost]
         [ActionName("message")]
-        public void Add([FromBody] Message message)
+        public void Add([FromBody]Message message)
         {
             messageCollection.Add(message);
             MessageRepo.Add(message);
