@@ -48,13 +48,12 @@ namespace REST_API.Repository
         public List<Permission> GetByID(int id)
         {
             string Query = $@"SELECT * FROM Permissions 
-                              WHERE PermissionID = @PermissionID;";
+                              WHERE OfferID = @OfferID;";
             IEnumerable<Permission> permission = con.Query<Permission>(Query,
                 new
                 {
-                    PermissionID = id
+                    OfferID = id
                 });
-            //con.Close();
             return permission.ToList();
         }
 

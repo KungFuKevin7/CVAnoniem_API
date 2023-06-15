@@ -25,7 +25,7 @@ namespace REST_API.Controller
         [ActionName("offer")]
         public HttpStatusCode Add([FromBody]Offer offer)
         {
-            OfferRepo.AddOrUpdate(offer);
+            OfferRepo.Add(offer);
             return HttpStatusCode.OK;
 
         }
@@ -41,7 +41,7 @@ namespace REST_API.Controller
         [ActionName("offer")]
         public void Update(Offer updatedOffer)
         {
-            OfferRepo.AddOrUpdate(updatedOffer);
+            OfferRepo.Update(updatedOffer, updatedOffer.OfferID);
         }
 
         [HttpGet]
@@ -62,6 +62,14 @@ namespace REST_API.Controller
         }
 
         [HttpGet]
+        [ActionName("offer/offer-by-id")]
+        public string GetOfferByOfferID(int offerid)
+        {
+            var json = JsonSerializer.Serialize(OfferRepo.GetByOfferID(offerid));
+            return json;
+        }
+
+        [HttpGet]
         [ActionName("offer/search-offers")]
         public string GetOfferByInput(string query)
         {
@@ -73,7 +81,8 @@ namespace REST_API.Controller
 
         [HttpGet]
         [ActionName("offer/user-has-offer")]
-        public int GetUserHasOffer(int userid) 
+        public Task<int>
+            GetUserHasOffer(int userid) 
         {
             return OfferRepo.UserHasOffer(userid);
         }

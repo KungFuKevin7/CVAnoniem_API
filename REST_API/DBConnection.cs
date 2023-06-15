@@ -24,6 +24,7 @@ namespace REST_API
         /// <returns></returns>
         public MySqlConnection GetConnectionMSQL()
         {
+            //conn.Open();
             return conn;
         }
 

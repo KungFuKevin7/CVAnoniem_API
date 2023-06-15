@@ -51,6 +51,18 @@ namespace REST_API.Repository
             return offer.ToList();
         }
 
+        public List<Offer> GetByOfferID(int id)
+        {
+            string Query = $@"SELECT * FROM Offer WHERE OfferID = @OfferID;";
+            IEnumerable<Offer> offer = con.Query<Offer>(Query,
+                new
+                {
+                    OfferID = id
+                });
+            //con.Close();
+            return offer.ToList();
+        }
+
         public void Delete(int id)
         {
             string Query = $@"DELETE FROM Offer
@@ -81,30 +93,18 @@ namespace REST_API.Repository
            //con.Close();
         }
 
-        public int UserHasOffer(int JobseekerID) 
+        public async Task<int> UserHasOffer(int JobseekerID) 
         {
             string Query = $@"SELECT OfferID 
                              FROM Offer
                              WHERE JobseekerID = @JobseekerID";
-            int Result = con.ExecuteScalar<int>(Query, new
+            int Result = await con.ExecuteScalarAsync<int>(Query, new
             {
                 JobSeekerID = JobseekerID
             });
 
             return Result;
 
-        }
-        public void AddOrUpdate(Offer offer) 
-        {
-            List<Offer> userHasResume = GetByID(offer.JobSeekerID);
-            if (userHasResume.Count > 0)
-            {
-                Update(offer, userHasResume[0].OfferID);
-            }
-            else
-            {
-                Add(offer);
-            }
         }
 
         public List<Offer> getOffersByName(string input) 

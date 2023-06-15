@@ -24,7 +24,6 @@ namespace REST_API.Controller
         {
             int offerid = OfferRepo.GetByID(senderid).ElementAt(0).OfferID;
             p.OfferID = offerid;
-            //Permissions.Add(p);
             PermissionRepo.Add(p);
         }
 
@@ -55,7 +54,9 @@ namespace REST_API.Controller
         [ActionName("permission")]
         public string GetPermissionsByID(int id)
         {
-            var json = JsonSerializer.Serialize(PermissionRepo.GetByID(id));
+            int OfferID = OfferRepo.GetByID(id).ElementAt(0).OfferID;
+
+            var json = JsonSerializer.Serialize(PermissionRepo.GetByID(OfferID));
             return json;
         }
     }

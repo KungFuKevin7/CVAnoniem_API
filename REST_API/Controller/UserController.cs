@@ -55,8 +55,21 @@ namespace REST_API.Controller
         [ActionName("user/user-exist")]
         public string UserExist(string email, string password)
         {
-            bool userfound = UserRepository.UserExist(email, password);
+            bool userfound = UserRepo.UserExist(email, password);
             if (userfound)
+            {
+                return "User Already Exist";
+            }
+
+            return "User Doesn't Exist";
+        }
+
+        [HttpGet]
+        [ActionName("user/user-with-thirdpartyid")]
+        public string UserThirdParty(string id)
+        {
+            int userfound = UserRepo.GetByThirdPartyID(id);
+            if (userfound > 0)
             {
                 return "User Already Exist";
             }

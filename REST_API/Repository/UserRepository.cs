@@ -12,7 +12,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public static bool UserExist(string email, string password)
+        public bool UserExist(string email, string password)
         {
             string Query = $@"SELECT COUNT(*) FROM Users
                               WHERE EmailAddress = @EmailAddress AND
@@ -54,6 +54,21 @@ namespace REST_API.Repository
             //con.Close();
         }
 
+        public void AddUsingThirdParty(User user)
+        {
+            string Query = $@"INSERT INTO Users(
+                            EmailAddress, ThirdPartyID)
+                            VALUES (@EmailAddress, @ThirdPartyID);";
+
+            con.QueryFirstOrDefault<User>(Query,
+                new
+                {
+                    user.EmailAddress,
+                    user.ThirdPartyID
+                });
+            //con.Close();
+        }
+
         public void Update(User user, int id)
         {
             string Query = $@"UPDATE Users SET
@@ -90,6 +105,18 @@ namespace REST_API.Repository
             });
             //con.Close();
             return UsersList.ToList();
+        }
+
+        public int GetByThirdPartyID(string id)
+        {
+            string Query = $@"SELECT * FROM Users WHERE ThirdPartyID = @ThirdPartyID;";
+
+            int userExist = con.ExecuteScalar<int>(Query, new
+            {
+                ThirdPartyID = id
+            });
+            //con.Close();
+            return userExist;
         }
 
 
