@@ -12,7 +12,7 @@ namespace REST_API.Repository
         public static MySqlConnection con = DBConnection.getInstance()
                                                   .GetConnectionMSQL();
 
-        public void Add(Permission permission)
+        public int Add(Permission permission)
         {
 
             string Query = $@"INSERT INTO Permissions(
@@ -25,7 +25,8 @@ namespace REST_API.Repository
                     OfferID = permission.OfferID,
                     EmployerID = permission.EmployerID
                 });
-            //con.Close();
+            con.Close();
+            return 200;
         }
 
         public void Delete(int id)
@@ -34,26 +35,27 @@ namespace REST_API.Repository
                               WHERE PermissionID = @PermissionID";
 
             con.Execute(Query, new { PermissionID = id });
-            //con.Close();
+            con.Close();
         }
 
         public List<Permission> Get()
         {
             string Query = $@"SELECT * FROM Permissions;";
             List<Permission> permissions = con.Query<Permission>(Query).ToList();
-            //con.Close();
+            con.Close();
             return permissions;
         }
 
         public List<Permission> GetByID(int id)
         {
             string Query = $@"SELECT * FROM Permissions 
-                              WHERE OfferID = @OfferID;";
+                              WHERE PermissionID = @PermissionID;";
             IEnumerable<Permission> permission = con.Query<Permission>(Query,
                 new
                 {
-                    OfferID = id
+                    PermissionID = id
                 });
+            con.Close();
             return permission.ToList();
         }
 

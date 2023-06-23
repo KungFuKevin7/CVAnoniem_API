@@ -12,7 +12,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public bool UserExist(string email, string password)
+        public static bool UserExist(string email, string password)
         {
             string Query = $@"SELECT COUNT(*) FROM Users
                               WHERE EmailAddress = @EmailAddress AND
@@ -38,7 +38,7 @@ namespace REST_API.Repository
             return UsersList;
         }
 
-        public void Add(User user)
+        public int Add(User user)
         {
             string Query = $@"INSERT INTO Users(
                             EmailAddress, Password, PhoneNumber)
@@ -51,22 +51,8 @@ namespace REST_API.Repository
                     user.Password,
                     user.PhoneNumber
                 });
-            //con.Close();
-        }
-
-        public void AddUsingThirdParty(User user)
-        {
-            string Query = $@"INSERT INTO Users(
-                            EmailAddress, ThirdPartyID)
-                            VALUES (@EmailAddress, @ThirdPartyID);";
-
-            con.QueryFirstOrDefault<User>(Query,
-                new
-                {
-                    user.EmailAddress,
-                    user.ThirdPartyID
-                });
-            //con.Close();
+            con.Close();
+            return 200;
         }
 
         public void Update(User user, int id)
@@ -83,7 +69,7 @@ namespace REST_API.Repository
                                 user.Password,
                                 UserID = id
                             });
-           //con.Close();
+            con.Close();
         }
 
         public void Delete(int id)
@@ -103,20 +89,8 @@ namespace REST_API.Repository
             {
                 UserID = id
             });
-            //con.Close();
+            con.Close();
             return UsersList.ToList();
-        }
-
-        public int GetByThirdPartyID(string id)
-        {
-            string Query = $@"SELECT * FROM Users WHERE ThirdPartyID = @ThirdPartyID;";
-
-            int userExist = con.ExecuteScalar<int>(Query, new
-            {
-                ThirdPartyID = id
-            });
-            //con.Close();
-            return userExist;
         }
 
 

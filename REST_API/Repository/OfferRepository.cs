@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
+using REST_API.Controller;
 using REST_API.Model;
 using System;
 
@@ -13,7 +14,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public void Add(Offer offer)
+        public int Add(Offer offer)
         {
             string Query = $@"INSERT INTO Offer(
                             WorkField, Title, Description, Province, JobSeekerID)
@@ -28,14 +29,15 @@ namespace REST_API.Repository
                     Province = offer.Province,
                     JobSeekerID = offer.JobSeekerID
                 });
-            //con.Close();
+            con.Close();
+            return GetByID(offer.JobSeekerID)[0].OfferID;
         }
 
         public List<Offer> Get()
         {
             string Query = $@"SELECT * FROM Offer;";
             List<Offer> Offers = con.Query<Offer>(Query).ToList();
-            //con.Close();
+            con.Close();
             return Offers;
         }
 
@@ -47,19 +49,7 @@ namespace REST_API.Repository
                 {
                     JobSeekerID = id
                 });
-            //con.Close();
-            return offer.ToList();
-        }
-
-        public List<Offer> GetByOfferID(int id)
-        {
-            string Query = $@"SELECT * FROM Offer WHERE OfferID = @OfferID;";
-            IEnumerable<Offer> offer = con.Query<Offer>(Query,
-                new
-                {
-                    OfferID = id
-                });
-            //con.Close();
+            con.Close();
             return offer.ToList();
         }
 
@@ -69,7 +59,7 @@ namespace REST_API.Repository
                               WHERE OfferID = @OfferID";
 
             con.Execute(Query, new { OfferID = id });
-            //con.Close();
+            con.Close();
         }
 
         public void Update(Offer offer, int offerID)
@@ -90,21 +80,53 @@ namespace REST_API.Repository
                                 offer.Province,
                                 offerID
                             });
-           //con.Close();
+            con.Close();
         }
 
-        public async Task<int> UserHasOffer(int JobseekerID) 
+        public int UserHasOffer(int JobseekerID) 
         {
             string Query = $@"SELECT OfferID 
                              FROM Offer
                              WHERE JobseekerID = @JobseekerID";
-            int Result = await con.ExecuteScalarAsync<int>(Query, new
+            int Result = con.ExecuteScalar<int>(Query, new
             {
                 JobSeekerID = JobseekerID
             });
 
             return Result;
 
+        }
+        public void AddOrUpdate(Offer offer) 
+        {
+            ResumeController resumeController = new ResumeController(); 
+            List<Offer> userHasResume = GetByID(offer.JobSeekerID);
+            if (userHasResume.Count > 0)
+            {
+                Update(offer, userHasResume[0].OfferID);
+            }
+            else
+            {
+                int offerID = Add(offer);
+                //resumeController.AddTest(offerID);
+                
+            }
+        }
+
+        public void AddOrUpdate(Offer offer, IFormFile file)
+        {
+            ResumeController resumeController = new ResumeController();
+            List<Offer> userHasResume = GetByID(offer.JobSeekerID);
+            if (userHasResume.Count > 0)
+            {
+                Update(offer, userHasResume[0].OfferID);
+                resumeController.UpdateTest(file, offer.JobSeekerID, userHasResume[0].OfferID);
+            }
+            else
+            {
+                int offerID = Add(offer);
+                resumeController.AddTest(file, offer.JobSeekerID, offerID);
+
+            }
         }
 
         public List<Offer> getOffersByName(string input) 
@@ -125,7 +147,7 @@ namespace REST_API.Repository
                 {
                     input = input
                 });
-            //con.Close();
+            con.Close();
             return offer.ToList();
         }
     
