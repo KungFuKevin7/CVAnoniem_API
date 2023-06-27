@@ -53,6 +53,8 @@ namespace REST_API.Repository
             return offer.ToList();
         }
 
+        
+
         public void Delete(int id)
         {
             string Query = $@"DELETE FROM Offer
@@ -87,12 +89,12 @@ namespace REST_API.Repository
         {
             string Query = $@"SELECT OfferID 
                              FROM Offer
-                             WHERE JobseekerID = @JobseekerID";
+                             WHERE JobSeekerID = @JobseekerID";
             int Result = con.ExecuteScalar<int>(Query, new
             {
                 JobSeekerID = JobseekerID
             });
-
+            con.Close();    
             return Result;
 
         }
@@ -100,6 +102,8 @@ namespace REST_API.Repository
         {
             ResumeController resumeController = new ResumeController(); 
             List<Offer> userHasResume = GetByID(offer.JobSeekerID);
+
+            
             if (userHasResume.Count > 0)
             {
                 Update(offer, userHasResume[0].OfferID);
@@ -116,14 +120,19 @@ namespace REST_API.Repository
         {
             ResumeController resumeController = new ResumeController();
             List<Offer> userHasResume = GetByID(offer.JobSeekerID);
-            if (userHasResume.Count > 0)
+
+            ResumeRepository ResumeRepo = new ResumeRepository();
+            int offerID = UserHasOffer(offer.JobSeekerID);
+            List<Resume> resume = ResumeRepo.GetByID(offerID);
+
+            if (resume.Count > 0)
             {
                 Update(offer, userHasResume[0].OfferID);
                 resumeController.UpdateTest(file, offer.JobSeekerID, userHasResume[0].OfferID);
             }
             else
             {
-                int offerID = Add(offer);
+                offerID = Add(offer);
                 resumeController.AddTest(file, offer.JobSeekerID, offerID);
 
             }
