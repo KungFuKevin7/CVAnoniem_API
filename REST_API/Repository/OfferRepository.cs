@@ -13,7 +13,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public void Add(Offer offer)
+        public string Add(Offer offer)
         {
             string Query = $@"INSERT INTO Offer(
                             WorkField, Title, Description, Province, JobSeekerID)
@@ -28,6 +28,8 @@ namespace REST_API.Repository
                     Province = offer.Province,
                     JobSeekerID = offer.JobSeekerID
                 });
+
+            return "Success";
             //con.Close();
         }
 
@@ -126,6 +128,7 @@ namespace REST_API.Repository
                     input = input
                 });
             //con.Close();
+
             return offer.ToList();
         }
     

@@ -12,7 +12,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public void Add(Message message)
+        public string Add(Message message)
         {
             string Query = $@"INSERT INTO Message(
                             JobSeekerID, EmployerID, Subject, Message)
@@ -27,6 +27,7 @@ namespace REST_API.Repository
                     Message = message.message
                 });
             //con.Close();
+            return "Success";
         }
 
         public void Delete(int id)

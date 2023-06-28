@@ -12,7 +12,7 @@ namespace REST_API.Repository
         public static MySqlConnection con = DBConnection.getInstance()
                                                   .GetConnectionMSQL();
 
-        public void Add(Permission permission)
+        public string Add(Permission permission)
         {
 
             string Query = $@"INSERT INTO Permissions(
@@ -25,6 +25,8 @@ namespace REST_API.Repository
                     OfferID = permission.OfferID,
                     EmployerID = permission.EmployerID
                 });
+
+            return "Success";
             //con.Close();
         }
 

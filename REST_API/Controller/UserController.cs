@@ -36,6 +36,15 @@ namespace REST_API.Controller
             }
         }
 
+        [HttpPost]
+        [ActionName("user/third-party")]
+        public int Add([FromBody]User user)
+        {
+            userCollection.Add(user);
+            UserRepo.AddUsingThirdParty(user);
+            return UserRepo.GetByThirdPartyID(user.ThirdPartyID);
+        }
+
         [HttpPut]
         [ActionName("user")]
         public void Update([FromBody]User user, int id)
@@ -55,26 +64,39 @@ namespace REST_API.Controller
         [ActionName("user/user-exist")]
         public string UserExist(string email, string password)
         {
-            bool userfound = UserRepo.UserExist(email, password);
-            if (userfound)
-            {
-                return "User Already Exist";
-            }
+            var json = JsonSerializer.Serialize(UserRepo.UserExist(email, password));
+            return json;
+        }
 
-            return "User Doesn't Exist";
+        [HttpGet]
+        [ActionName("user/user-exist-email")]
+        public string UserExist(string email)
+        {
+            var json = JsonSerializer.Serialize(UserRepo.UserExist(email));
+            return json;
         }
 
         [HttpGet]
         [ActionName("user/user-with-thirdpartyid")]
-        public string UserThirdParty(string id)
+        public int UserThirdParty(string id)
         {
             int userfound = UserRepo.GetByThirdPartyID(id);
-            if (userfound > 0)
+            if (userfound == 0)
             {
-                return "User Already Exist";
+                return 0;
             }
 
-            return "User Doesn't Exist";
+            return userfound;
+
+        }
+
+        [HttpGet]
+        [ActionName("user/usertype")]
+        public int UserType(int id)
+        {
+            int isEmployer = UserRepo.GetUsertypeByID(id);
+
+            return isEmployer;
 
         }
     }

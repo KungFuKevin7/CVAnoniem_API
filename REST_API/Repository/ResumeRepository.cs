@@ -12,7 +12,7 @@ namespace REST_API.Repository
         public static MySqlConnection con = DBConnection.getInstance()
                                                   .GetConnectionMSQL();
 
-        public void Add(Resume resume)
+        public string Add(Resume resume)
         {
             string Query = $@"INSERT INTO Resume(
                             FullResume, CensoredResume, OfferID)
@@ -25,6 +25,7 @@ namespace REST_API.Repository
                     CensoredResume = resume.CensoredResume,
                     OfferID = resume.OfferID
                 });
+            return "Success";
             //con.Close();
         }
 

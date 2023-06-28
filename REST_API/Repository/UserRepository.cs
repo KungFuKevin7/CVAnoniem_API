@@ -12,22 +12,32 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public bool UserExist(string email, string password)
+        public User UserExist(string email, string password)
         {
-            string Query = $@"SELECT COUNT(*) FROM Users
+            string Query = $@"SELECT * FROM Users
                               WHERE EmailAddress = @EmailAddress AND
                               Password = @Password";
-            int exist = con.ExecuteScalar<int>(Query, new
+          
+            var user = con.QueryFirstOrDefault<User>(Query, new
             {
                 EmailAddress = email,
                 Password = password
             });
-            if (exist < 1)
-            {
-                return false;
-            }
 
-            return true;
+            return user;
+        }
+
+        public User UserExist(string email)
+        {
+            string Query = $@"SELECT * FROM Users
+                              WHERE EmailAddress = @EmailAddress";
+
+            var user = con.QueryFirstOrDefault<User>(Query, new
+            {
+                EmailAddress = email
+            });
+
+            return user;
         }
 
         public List<User> Get()
@@ -38,33 +48,42 @@ namespace REST_API.Repository
             return UsersList;
         }
 
-        public void Add(User user)
+        public string Add(User user)
         {
-            string Query = $@"INSERT INTO Users(
-                            EmailAddress, Password, PhoneNumber)
-                            VALUES (@EmailAddress, @Password, @PhoneNumber);";
+            if (UserExist(user.EmailAddress) != null)
+            {
+                return "Email is al in gebruik";
+            }
+            else
+            {
+                string Query = $@"INSERT INTO Users(
+                            EmailAddress, Password, PhoneNumber, IsEmployer)
+                            VALUES (@EmailAddress, @Password, @PhoneNumber, @IsEmployer);";
 
-            con.QueryFirstOrDefault<User>(Query,
-                new
-                {
-                    user.EmailAddress,
-                    user.Password,
-                    user.PhoneNumber
-                });
-            //con.Close();
+                con.QueryFirstOrDefault<User>(Query,
+                    new
+                    {
+                        user.EmailAddress,
+                        user.Password,
+                        user.PhoneNumber,
+                        user.IsEmployer
+                    });
+                return "Success";
+            }
         }
 
         public void AddUsingThirdParty(User user)
         {
             string Query = $@"INSERT INTO Users(
-                            EmailAddress, ThirdPartyID)
-                            VALUES (@EmailAddress, @ThirdPartyID);";
+                            EmailAddress, ThirdPartyID, isEmployer)
+                            VALUES (@EmailAddress, @ThirdPartyID, @isEmployer);";
 
             con.QueryFirstOrDefault<User>(Query,
                 new
                 {
                     user.EmailAddress,
-                    user.ThirdPartyID
+                    user.ThirdPartyID,
+                    user.IsEmployer
                 });
             //con.Close();
         }
@@ -109,16 +128,27 @@ namespace REST_API.Repository
 
         public int GetByThirdPartyID(string id)
         {
-            string Query = $@"SELECT * FROM Users WHERE ThirdPartyID = @ThirdPartyID;";
+            string Query = $@"SELECT UserID FROM Users WHERE ThirdPartyID = @ThirdPartyID;";
 
-            int userExist = con.ExecuteScalar<int>(Query, new
+            int userid = con.ExecuteScalar<int>(Query, new
             {
                 ThirdPartyID = id
             });
             //con.Close();
-            return userExist;
+            return userid;
         }
 
+        public int GetUsertypeByID(int id)
+        {
+            string Query = $@"SELECT IsEmployer FROM Users WHERE UserID = @UserID;";
+
+            int userid = con.ExecuteScalar<int>(Query, new
+            {
+                UserID = id
+            });
+            //con.Close();
+            return userid;
+        }
 
     }
 }

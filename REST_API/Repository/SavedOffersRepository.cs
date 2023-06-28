@@ -12,7 +12,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public void Add(SavedOffers offer)
+        public string Add(SavedOffers offer)
         {
             string Query = $@"INSERT INTO SavedOffers(
                             EmployerID, OfferID)
@@ -25,6 +25,7 @@ namespace REST_API.Repository
                     OfferID = offer.OfferID,
                 });
             //con.Close();
+            return "success";
         }
 
         public void Delete(int SavedID)
@@ -82,6 +83,7 @@ namespace REST_API.Repository
         {
             throw new NotImplementedException();
         }
+
 
         List<SavedOffers> IRepository<SavedOffers>.GetByID(int id)
         {

@@ -20,7 +20,8 @@
         /// </summary>
         /// <param name="objectsToAdd">An object of the given type, to be added
         /// to the database</param>
-        void Add(T objectsToAdd);
+        /// <returns>string response to inform user of status</returns>
+        string Add(T objectsToAdd);
         /// <summary>
         /// Method that handles the PUT Request
         /// </summary>
