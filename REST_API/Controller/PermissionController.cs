@@ -54,10 +54,34 @@ namespace REST_API.Controller
         [ActionName("permission")]
         public string GetPermissionsByID(int id)
         {
-            int OfferID = OfferRepo.GetByID(id).ElementAt(0).OfferID;
+            try
+            {
+                int OfferID = OfferRepo.GetByID(id).ElementAt(0).OfferID;
 
-            var json = JsonSerializer.Serialize(PermissionRepo.GetByID(OfferID));
+                Permission? result = PermissionRepo.GetByID(OfferID).Find(x => x.OfferID == OfferID);
+                var json = JsonSerializer.Serialize(result);
+                return json;
+            }
+            catch (Exception e)
+            {
+
+                return "Error, geen permissions gevonden.";
+            }
+
+   
+        }
+
+        [HttpGet]
+        [ActionName("permission/for-employer")]
+        public string GetPermissionsByEmployer(int id)
+        {
+ 
+            List<Permission> result = PermissionRepo.GetByEmployer(id);
+            var json = JsonSerializer.Serialize(result);
+
             return json;
         }
+
+
     }
 }
