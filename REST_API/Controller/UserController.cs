@@ -87,7 +87,6 @@ namespace REST_API.Controller
             }
 
             return userfound;
-
         }
 
         [HttpGet]

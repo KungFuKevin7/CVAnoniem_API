@@ -44,13 +44,23 @@ namespace REST_API.Repository
         public List<Offer> GetByID(int id)
         {
             string Query = $@"SELECT * FROM Offer WHERE JobSeekerID = @JobSeekerID;";
-            IEnumerable<Offer> offer = con.Query<Offer>(Query,
+            try
+            {
+                IEnumerable<Offer> offer = con.Query<Offer>(Query,
                 new
-                {
+                { 
                     JobSeekerID = id
                 });
-            //con.Close();
-            return offer.ToList();
+
+                //con.close();
+                return offer.ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new List<Offer>();
+            }
+            
         }
 
         public List<Offer> GetByOfferID(int id)
