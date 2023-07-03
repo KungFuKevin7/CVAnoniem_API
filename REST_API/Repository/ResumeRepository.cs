@@ -12,7 +12,7 @@ namespace REST_API.Repository
         public static MySqlConnection con = DBConnection.getInstance()
                                                   .GetConnectionMSQL();
 
-        public string Add(Resume resume)
+        public int Add(Resume resume)
         {
             string Query = $@"INSERT INTO Resume(
                             FullResume, CensoredResume, OfferID)
@@ -25,8 +25,8 @@ namespace REST_API.Repository
                     CensoredResume = resume.CensoredResume,
                     OfferID = resume.OfferID
                 });
-            return "Success";
-            //con.Close();
+            con.Close();
+            return 200;
         }
 
         public void Delete(int id)
@@ -35,7 +35,7 @@ namespace REST_API.Repository
                               WHERE ResumeID = @ResumeID";
 
             con.Execute(Query, new { ResumeID = id });
-            //con.Close();
+            con.Close();
         }
 
         public List<Resume> Get()
@@ -43,7 +43,7 @@ namespace REST_API.Repository
             string Query = $@"SELECT * FROM Resume;";
 
             List<Resume> ResumeList = con.Query<Resume>(Query).ToList();
-            //con.Close();
+            con.Close();
             return ResumeList;
         }
 
@@ -56,7 +56,7 @@ namespace REST_API.Repository
             {
                 Offerid = Offerid
             });
-            //con.Close();
+            con.Close();
             return UsersList.ToList();
         }
 
@@ -65,16 +65,16 @@ namespace REST_API.Repository
             string Query = $@"UPDATE Resume SET
                              FullResume = @FullResume,
                              CensoredResume = @CensoredResume
-                             WHERE ResumeID = @ResumeID";
+                             WHERE OfferID = @OfferID";
 
             con.Execute(Query,
                             new
                             {
                                 FullResume = updatedResume.FullResume,
                                 CensoredResume = updatedResume.CensoredResume,
-                                ResumeID = id
+                                OfferID = id
                             });
-            //con.Close();
+            con.Close();
         }
     }
 }

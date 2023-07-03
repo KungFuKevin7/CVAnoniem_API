@@ -18,7 +18,7 @@ namespace REST_API.Model
         [Bindable(true)]
         public string Attachment { get; set; }
         [Bindable(true)]
-        public string DateSent { get; set; }
+        public DateTime DateSent { get; set; }
 
         [JsonConstructor]
         public Message()

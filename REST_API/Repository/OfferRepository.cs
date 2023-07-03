@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
+using REST_API.Controller;
 using REST_API.Model;
 using System;
 
@@ -13,7 +14,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public string Add(Offer offer)
+        public int Add(Offer offer)
         {
             string Query = $@"INSERT INTO Offer(
                             WorkField, Title, Description, Province, JobSeekerID)
@@ -28,16 +29,15 @@ namespace REST_API.Repository
                     Province = offer.Province,
                     JobSeekerID = offer.JobSeekerID
                 });
-
-            return "Success";
-            //con.Close();
+            con.Close();
+            return GetByID(offer.JobSeekerID)[0].OfferID;
         }
 
         public List<Offer> Get()
         {
             string Query = $@"SELECT * FROM Offer;";
             List<Offer> Offers = con.Query<Offer>(Query).ToList();
-            //con.Close();
+            con.Close();
             return Offers;
         }
 
@@ -48,11 +48,10 @@ namespace REST_API.Repository
             {
                 IEnumerable<Offer> offer = con.Query<Offer>(Query,
                 new
-                { 
+                {
                     JobSeekerID = id
                 });
-
-                //con.close();
+                con.Close();
                 return offer.ToList();
             }
             catch (Exception e)
@@ -60,20 +59,9 @@ namespace REST_API.Repository
                 Console.WriteLine(e);
                 return new List<Offer>();
             }
-            
         }
 
-        public List<Offer> GetByOfferID(int id)
-        {
-            string Query = $@"SELECT * FROM Offer WHERE OfferID = @OfferID;";
-            IEnumerable<Offer> offer = con.Query<Offer>(Query,
-                new
-                {
-                    OfferID = id
-                });
-            //con.Close();
-            return offer.ToList();
-        }
+        
 
         public void Delete(int id)
         {
@@ -81,7 +69,7 @@ namespace REST_API.Repository
                               WHERE OfferID = @OfferID";
 
             con.Execute(Query, new { OfferID = id });
-            //con.Close();
+            con.Close();
         }
 
         public void Update(Offer offer, int offerID)
@@ -102,19 +90,19 @@ namespace REST_API.Repository
                                 offer.Province,
                                 offerID
                             });
-           //con.Close();
+            con.Close();
         }
 
-        public async Task<int> UserHasOffer(int JobseekerID) 
+        public int UserHasOffer(int JobseekerID) 
         {
             string Query = $@"SELECT OfferID 
                              FROM Offer
-                             WHERE JobseekerID = @JobseekerID";
-            int Result = await con.ExecuteScalarAsync<int>(Query, new
+                             WHERE JobSeekerID = @JobseekerID";
+            int Result = con.ExecuteScalar<int>(Query, new
             {
                 JobSeekerID = JobseekerID
             });
-
+            con.Close();    
             return Result;
 
         }
@@ -137,8 +125,7 @@ namespace REST_API.Repository
                 {
                     input = input
                 });
-            //con.Close();
-
+            con.Close();
             return offer.ToList();
         }
     

@@ -48,11 +48,11 @@ namespace REST_API.Repository
             return UsersList;
         }
 
-        public string Add(User user)
+        public int Add(User user)
         {
             if (UserExist(user.EmailAddress) != null)
             {
-                return "Email is al in gebruik";
+                return 400;
             }
             else
             {
@@ -68,7 +68,7 @@ namespace REST_API.Repository
                         user.PhoneNumber,
                         user.IsEmployer
                     });
-                return "Success";
+                return 200;
             }
         }
 
@@ -102,7 +102,7 @@ namespace REST_API.Repository
                                 user.Password,
                                 UserID = id
                             });
-           //con.Close();
+            con.Close();
         }
 
         public void Delete(int id)
@@ -122,7 +122,7 @@ namespace REST_API.Repository
             {
                 UserID = id
             });
-            //con.Close();
+            con.Close();
             return UsersList.ToList();
         }
 

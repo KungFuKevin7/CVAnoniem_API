@@ -21,11 +21,20 @@ namespace REST_API.Controller
 
         public static List<Offer> offersCollection = new List<Offer>();
 
+        public static ResumeController resumeController = new ResumeController();
+
         [HttpPost]
         [ActionName("offer")]
-        public HttpStatusCode Add([FromBody]Offer offer)
+        public HttpStatusCode Add(IFormFile file, string offer)
         {
-            OfferRepo.Add(offer);
+            //System.Console.WriteLine(offer);
+            Offer offerRec = JsonSerializer.Deserialize<Offer>(offer);
+
+            System.Console.WriteLine(offerRec.Province);
+            System.Console.WriteLine(file.FileName);
+            
+            int offerID = OfferRepo.Add(offerRec);
+            resumeController.AddTest(file, offerRec.JobSeekerID, offerID);
             return HttpStatusCode.OK;
 
         }
@@ -41,7 +50,7 @@ namespace REST_API.Controller
         [ActionName("offer")]
         public void Update(Offer updatedOffer)
         {
-            OfferRepo.Update(updatedOffer, updatedOffer.OfferID);
+            OfferRepo.Update(updatedOffer,updatedOffer.OfferID);
         }
 
         [HttpGet]
@@ -62,14 +71,6 @@ namespace REST_API.Controller
         }
 
         [HttpGet]
-        [ActionName("offer/offer-by-id")]
-        public string GetOfferByOfferID(int offerid)
-        {
-            var json = JsonSerializer.Serialize(OfferRepo.GetByOfferID(offerid));
-            return json;
-        }
-
-        [HttpGet]
         [ActionName("offer/search-offers")]
         public string GetOfferByInput(string query)
         {
@@ -81,8 +82,7 @@ namespace REST_API.Controller
 
         [HttpGet]
         [ActionName("offer/user-has-offer")]
-        public Task<int>
-            GetUserHasOffer(int userid) 
+        public int GetUserHasOffer(int userid) 
         {
             return OfferRepo.UserHasOffer(userid);
         }

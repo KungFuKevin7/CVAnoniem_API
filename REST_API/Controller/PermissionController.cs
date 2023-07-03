@@ -24,6 +24,7 @@ namespace REST_API.Controller
         {
             int offerid = OfferRepo.GetByID(senderid).ElementAt(0).OfferID;
             p.OfferID = offerid;
+            //Permissions.Add(p);
             PermissionRepo.Add(p);
         }
 

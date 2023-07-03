@@ -12,7 +12,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public string Add(Message message)
+        public int Add(Message message)
         {
             string Query = $@"INSERT INTO Message(
                             JobSeekerID, EmployerID, Subject, Message)
@@ -26,8 +26,8 @@ namespace REST_API.Repository
                     Subject = message.Subject,
                     Message = message.message
                 });
-            //con.Close();
-            return "Success";
+            con.Close();
+            return 200;
         }
 
         public void Delete(int id)
@@ -36,14 +36,14 @@ namespace REST_API.Repository
                               WHERE MessageID = @MessageID";
 
             con.Execute(Query, new { MessageID = id });
-            //con.Close();
+            con.Close();
         }
 
         public List<Message> Get()
         {
             string Query = $@"SELECT * FROM Message;";
             List<Message> Messages = con.Query<Message>(Query).ToList();
-            //con.Close();
+            con.Close();
             return Messages;
         }
 
@@ -56,7 +56,7 @@ namespace REST_API.Repository
                 {
                     JobseekerID = id
                 });
-            //con.Close();
+            con.Close();
             return message.ToList();
         }
 

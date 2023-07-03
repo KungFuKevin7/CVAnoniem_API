@@ -12,7 +12,7 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public string Add(SavedOffers offer)
+        public int Add(SavedOffers offer)
         {
             string Query = $@"INSERT INTO SavedOffers(
                             EmployerID, OfferID)
@@ -24,8 +24,8 @@ namespace REST_API.Repository
                     EmployerID = offer.EmployerID,
                     OfferID = offer.OfferID,
                 });
-            //con.Close();
-            return "success";
+            con.Close();
+            return 200;
         }
 
         public void Delete(int SavedID)
@@ -37,7 +37,7 @@ namespace REST_API.Repository
             { 
                  SavedID = SavedID,
             });
-            //con.Close();
+            con.Close();
         }
 
         public List<SavedOffers> Get()
@@ -45,7 +45,7 @@ namespace REST_API.Repository
             string Query = $@"SELECT * FROM SavedOffers;";
             List<SavedOffers> savedOffers = 
                 con.Query<SavedOffers>(Query).ToList();
-            //con.Close();
+            con.Close();
             return savedOffers;
         }
 
@@ -60,7 +60,7 @@ namespace REST_API.Repository
                 {
                     id = id
                 }) ;
-            //con.Close();
+            con.Close();
             return savedOffers.ToList();
         }
 
@@ -75,7 +75,7 @@ namespace REST_API.Repository
                 userid = userid,
                 offerid = offerid
             });
-            //con.Close();
+            con.Close();
             return ID;
         }
 
