@@ -55,13 +55,8 @@ namespace REST_API.Controller
         [ActionName("user/user-exist")]
         public string UserExist(string email, string password)
         {
-            bool userfound = UserRepository.UserExist(email, password);
-            if (userfound)
-            {
-                return "User Already Exist";
-            }
-
-            return "User Doesn't Exist";
+            var json = JsonSerializer.Serialize(UserRepo.UserExist(email, password));
+            return json;
 
         }
     }

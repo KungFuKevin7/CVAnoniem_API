@@ -13,6 +13,8 @@ namespace REST_API.Model
         public string Password { get; set; }
         [Bindable(true)]
         public string PhoneNumber { get; set; }
+        [Bindable(true)]
+        public bool IsEmployer { get; set; }
 
         [JsonConstructor]
         public User()

@@ -18,22 +18,26 @@ namespace REST_API.Controller
     public class OfferController : ControllerBase
     {
         public static OfferRepository OfferRepo = new OfferRepository();
-
+        public static ResumeController resumeController = new ResumeController();   
         public static List<Offer> offersCollection = new List<Offer>();
+        
 
         [HttpPost]
         [ActionName("offer")]
         public HttpStatusCode Add(IFormFile file, string offer)
         {
-            //System.Console.WriteLine(offer);
+            System.Console.WriteLine("got here");
             Offer offerRec = JsonSerializer.Deserialize<Offer>(offer);
 
 
 
             System.Console.WriteLine(offerRec.Province);
             System.Console.WriteLine(file.FileName);
-            
-            OfferRepo.AddOrUpdate(offerRec, file);
+
+            int offerID = OfferRepo.Add(offerRec);
+            resumeController.AddTest(file, offerRec.JobSeekerID, offerID);
+
+            //OfferRepo.AddOrUpdate(offerRec, file);
             return HttpStatusCode.OK;
 
         }
@@ -47,9 +51,11 @@ namespace REST_API.Controller
 
         [HttpPut]
         [ActionName("offer")]
-        public void Update(Offer updatedOffer)
+        public void Update(IFormFile file, string updatedOffer)
         {
-            OfferRepo.AddOrUpdate(updatedOffer);
+            Offer offer = JsonSerializer.Deserialize<Offer>(updatedOffer);
+            OfferRepo.Update(offer, offer.OfferID);
+            resumeController.UpdateTest(file, offer.JobSeekerID, offer.OfferID);
         }
 
         [HttpGet]
@@ -68,6 +74,7 @@ namespace REST_API.Controller
             var json = JsonSerializer.Serialize(OfferRepo.GetByID(userid));
             return json;
         }
+
 
         [HttpGet]
         [ActionName("offer/search-offers")]

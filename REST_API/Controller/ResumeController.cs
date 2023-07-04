@@ -57,8 +57,8 @@ namespace REST_API.Controller
         {
             //System.Console.WriteLine("got here");
             //uitgecomment omdat server niet draait op het moment
-            int offerID = OfferRepo.UserHasOffer(userID);
-            List<Resume> resume = ResumeRepo.GetByID(offerID);
+            //int offerID = OfferRepo.UserHasOffer(userID);
+            List<Resume> resume = ResumeRepo.GetByID(userID);
 
             
             
@@ -78,8 +78,10 @@ namespace REST_API.Controller
         [ActionName("resume/user-has-resume")]
         public int GetUserHasResume(int userID)
         {
-            int offerID = OfferRepo.UserHasOffer(userID);
-            return ResumeRepo.GetByID(offerID).Count;
+            //int offerID = OfferRepo.UserHasOffer(userID);
+            //return ResumeRepo.GetByID(offerID).Count;
+
+            return 1;
         }
 
 

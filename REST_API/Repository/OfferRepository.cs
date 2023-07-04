@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using REST_API.Controller;
 using REST_API.Model;
 using System;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace REST_API.Repository
 {
@@ -43,13 +44,18 @@ namespace REST_API.Repository
 
         public List<Offer> GetByID(int id)
         {
-            string Query = $@"SELECT * FROM Offer WHERE JobSeekerID = @JobSeekerID;";
-            IEnumerable<Offer> offer = con.Query<Offer>(Query,
+            MySqlConnection conn = new MySqlConnection(
+            ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString);
+            
+            System.Console.WriteLine(1);
+            string Query = $@"SELECT * FROM Offer WHERE JobSeekerID = @JobID;";
+            IEnumerable<Offer> offer = conn.Query<Offer>(Query,
                 new
                 {
-                    JobSeekerID = id
+                    JobID = id
                 });
-            con.Close();
+            conn.Close();
+            System.Console.WriteLine(7);
             return offer.ToList();
         }
 
@@ -87,12 +93,13 @@ namespace REST_API.Repository
 
         public int UserHasOffer(int JobseekerID) 
         {
+            System.Console.WriteLine(3);
             string Query = $@"SELECT OfferID 
                              FROM Offer
                              WHERE JobSeekerID = @JobseekerID";
             int Result = con.ExecuteScalar<int>(Query, new
             {
-                JobSeekerID = JobseekerID
+                JobseekerID
             });
             con.Close();    
             return Result;
@@ -118,24 +125,24 @@ namespace REST_API.Repository
 
         public void AddOrUpdate(Offer offer, IFormFile file)
         {
-            ResumeController resumeController = new ResumeController();
-            List<Offer> userHasResume = GetByID(offer.JobSeekerID);
+            //ResumeController resumeController = new ResumeController();
+            //List<Offer> userHasResume = GetByID(offer.JobSeekerID);
 
-            ResumeRepository ResumeRepo = new ResumeRepository();
-            int offerID = UserHasOffer(offer.JobSeekerID);
-            List<Resume> resume = ResumeRepo.GetByID(offerID);
+            //ResumeRepository ResumeRepo = new ResumeRepository();
+            //int offerID = UserHasOffer(offer.JobSeekerID);
+            //List<Resume> resume = ResumeRepo.GetByID(offerID);
 
-            if (resume.Count > 0)
-            {
-                Update(offer, userHasResume[0].OfferID);
-                resumeController.UpdateTest(file, offer.JobSeekerID, userHasResume[0].OfferID);
-            }
-            else
-            {
-                offerID = Add(offer);
-                resumeController.AddTest(file, offer.JobSeekerID, offerID);
+            //if (resume.Count > 0)
+            //{
+            //    Update(offer, userHasResume[0].OfferID);
+            //    resumeController.UpdateTest(file, offer.JobSeekerID, userHasResume[0].OfferID);
+            //}
+            //else
+            //{
+            //    offerID = Add(offer);
+            //    resumeController.AddTest(file, offer.JobSeekerID, offerID);
 
-            }
+            //}
         }
 
         public List<Offer> getOffersByName(string input) 

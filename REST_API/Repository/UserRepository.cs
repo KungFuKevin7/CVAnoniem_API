@@ -12,22 +12,19 @@ namespace REST_API.Repository
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance().GetConnectionMSQL();
 
-        public static bool UserExist(string email, string password)
+        public User UserExist(string email, string password)
         {
-            string Query = $@"SELECT COUNT(*) FROM Users
+            string Query = $@"SELECT * FROM Users
                               WHERE EmailAddress = @EmailAddress AND
                               Password = @Password";
-            int exist = con.ExecuteScalar<int>(Query, new
+
+            var user = con.QueryFirstOrDefault<User>(Query, new
             {
                 EmailAddress = email,
                 Password = password
             });
-            if (exist < 1)
-            {
-                return false;
-            }
 
-            return true;
+            return user;
         }
 
         public List<User> Get()
