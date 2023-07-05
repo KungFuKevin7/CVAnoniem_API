@@ -30,8 +30,8 @@ namespace REST_API.Controller
             //System.Console.WriteLine(offer);
             Offer offerRec = JsonSerializer.Deserialize<Offer>(offer);
 
-            System.Console.WriteLine(offerRec.Province);
-            System.Console.WriteLine(file.FileName);
+            Console.WriteLine(offerRec.Province);
+            Console.WriteLine(file.FileName);
             
             int offerID = OfferRepo.Add(offerRec);
             resumeController.AddTest(file, offerRec.JobSeekerID, offerID);
@@ -48,9 +48,12 @@ namespace REST_API.Controller
 
         [HttpPut]
         [ActionName("offer")]
-        public void Update(Offer updatedOffer)
+        public void Update(IFormFile file ,string updatedOffer)
         {
-            OfferRepo.Update(updatedOffer,updatedOffer.OfferID);
+            Offer offer = JsonSerializer.Deserialize<Offer>(updatedOffer);
+            OfferRepo.Update(offer, offer.OfferID);
+            resumeController.UpdateTest(file, offer.JobSeekerID, offer.OfferID);
+
         }
 
         [HttpGet]
