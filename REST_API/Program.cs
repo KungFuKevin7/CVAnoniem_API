@@ -26,7 +26,6 @@ public class Program
         //app.Map
         //app.MapGet("/", () => "Hello World!");
 
-        app.UseHttpsRedirection();
         app.UseCors();
         app.MapControllers();
         app.Run();

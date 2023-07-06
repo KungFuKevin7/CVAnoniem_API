@@ -36,6 +36,15 @@ namespace REST_API.Controller
             }
         }
 
+        [HttpPost]
+        [ActionName("user/third-party")]
+        public int Add([FromBody]User user)
+        {
+            userCollection.Add(user);
+            UserRepo.AddUsingThirdParty(user);
+            return UserRepo.GetByThirdPartyID(user.ThirdPartyID);
+        }
+
         [HttpPut]
         [ActionName("user")]
         public void Update([FromBody]User user, int id)
@@ -57,6 +66,36 @@ namespace REST_API.Controller
         {
             var json = JsonSerializer.Serialize(UserRepo.UserExist(email, password));
             return json;
+        }
+
+        [HttpGet]
+        [ActionName("user/user-exist-email")]
+        public string UserExist(string email)
+        {
+            var json = JsonSerializer.Serialize(UserRepo.UserExist(email));
+            return json;
+        }
+
+        [HttpGet]
+        [ActionName("user/user-with-thirdpartyid")]
+        public int UserThirdParty(string id)
+        {
+            int userfound = UserRepo.GetByThirdPartyID(id);
+            if (userfound == 0)
+            {
+                return 0;
+            }
+
+            return userfound;
+        }
+
+        [HttpGet]
+        [ActionName("user/usertype")]
+        public int UserType(int id)
+        {
+            int isEmployer = UserRepo.GetUsertypeByID(id);
+
+            return isEmployer;
 
         }
     }

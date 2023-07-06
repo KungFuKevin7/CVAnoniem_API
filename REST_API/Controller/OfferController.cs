@@ -22,6 +22,8 @@ namespace REST_API.Controller
         public static List<Offer> offersCollection = new List<Offer>();
         
 
+        public static ResumeController resumeController = new ResumeController();
+
         [HttpPost]
         [ActionName("offer")]
         public HttpStatusCode Add(IFormFile file, string offer)

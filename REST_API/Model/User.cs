@@ -15,6 +15,8 @@ namespace REST_API.Model
         public string PhoneNumber { get; set; }
         [Bindable(true)]
         public bool IsEmployer { get; set; }
+        [Bindable(true)]
+        public string ThirdPartyID { get; set; }
 
         [JsonConstructor]
         public User()

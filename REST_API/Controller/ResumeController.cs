@@ -16,6 +16,7 @@ namespace REST_API.Controller
     public class ResumeController
     {
         public static ResumeRepository ResumeRepo = new ResumeRepository();
+        public static PermissionRepository PermissionRepo = new PermissionRepository();
         public static OfferRepository OfferRepo = new OfferRepository();
 
         public static List<Resume> resumeCollection = new List<Resume>();
@@ -60,17 +61,57 @@ namespace REST_API.Controller
             //int offerID = OfferRepo.UserHasOffer(userID);
             List<Resume> resume = ResumeRepo.GetByID(userID);
 
-            
-            
             var stream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].CensoredResume), FileMode.Open);
 
-
-            //var stream = new FileStream(Path.Combine(Environment.CurrentDirectory, "PDF-testopslag\\0.pdf"), FileMode.Open);
-            
             return new FileStreamResult(stream, "application/pdf");
 
-            
+        }
 
+        [HttpGet]
+        [ActionName("resume/for-offer")]
+        public IActionResult GetResumeByOfferID(int offerID, int userID)
+        {
+            int userOfferID = OfferRepo.UserHasOffer(userID);
+            //Get Resume Item by corresponding offerID
+            List<Resume> resume = ResumeRepo.GetByID(offerID);
+
+            //If person is the owner of resume show full resume
+            if (offerID == userOfferID)
+            {
+                Console.WriteLine("You own this resume!");
+                var Fullstream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].FullResume), FileMode.Open);
+                return new FileStreamResult(Fullstream, "application/pdf");
+            }
+
+            //Look whether user has permission to view full resume
+            foreach (var permission in PermissionRepo.GetByEmployer(userID))
+            {
+                //if the user has permission, resume will be shown in full
+                if (permission.OfferID == offerID)
+                {
+                    Console.WriteLine("User has permission for this resume");
+                    var Fullstream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].FullResume), FileMode.Open);
+                    return new FileStreamResult(Fullstream, "application/pdf");
+                }
+            }
+            Console.WriteLine("User has no permission for this resume");
+
+            var Filestream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].CensoredResume), FileMode.Open);
+            return new FileStreamResult(Filestream, "application/pdf");
+        }
+
+
+        [HttpGet]
+        [ActionName("resume/full-resume")]
+        public IActionResult GetFullResumeByOfferID(int userID)
+        {
+            int offerID = OfferRepo.UserHasOffer(userID);
+
+            List<Resume> resume = ResumeRepo.GetByID(offerID);
+
+
+            var Fullstream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].FullResume), FileMode.Open);
+            return new FileStreamResult(Fullstream, "application/pdf");
         }
 
 

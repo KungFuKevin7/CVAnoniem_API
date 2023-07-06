@@ -105,45 +105,6 @@ namespace REST_API.Repository
             return Result;
 
         }
-        public void AddOrUpdate(Offer offer) 
-        {
-            ResumeController resumeController = new ResumeController(); 
-            List<Offer> userHasResume = GetByID(offer.JobSeekerID);
-
-            
-            if (userHasResume.Count > 0)
-            {
-                Update(offer, userHasResume[0].OfferID);
-            }
-            else
-            {
-                int offerID = Add(offer);
-                //resumeController.AddTest(offerID);
-                
-            }
-        }
-
-        public void AddOrUpdate(Offer offer, IFormFile file)
-        {
-            //ResumeController resumeController = new ResumeController();
-            //List<Offer> userHasResume = GetByID(offer.JobSeekerID);
-
-            //ResumeRepository ResumeRepo = new ResumeRepository();
-            //int offerID = UserHasOffer(offer.JobSeekerID);
-            //List<Resume> resume = ResumeRepo.GetByID(offerID);
-
-            //if (resume.Count > 0)
-            //{
-            //    Update(offer, userHasResume[0].OfferID);
-            //    resumeController.UpdateTest(file, offer.JobSeekerID, userHasResume[0].OfferID);
-            //}
-            //else
-            //{
-            //    offerID = Add(offer);
-            //    resumeController.AddTest(file, offer.JobSeekerID, offerID);
-
-            //}
-        }
 
         public List<Offer> getOffersByName(string input) 
         {

@@ -59,6 +59,19 @@ namespace REST_API.Repository
             return permission.ToList();
         }
 
+        public List<Permission> GetByEmployer(int id)
+        {
+            string Query = $@"SELECT * FROM Permissions 
+                              WHERE EmployerID = @EmployerID;";
+            IEnumerable<Permission> permission = con.Query<Permission>(Query,
+                new
+                {
+                    EmployerID = id
+                });
+            return permission.ToList();
+        }
+
+
         public void Update(Permission updatedObject, int id)
         {
             throw new NotImplementedException();
