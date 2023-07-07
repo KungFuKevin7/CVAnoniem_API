@@ -97,7 +97,6 @@ def redactUserInput(userInfo):
 
 
 for i in range(len(reader.pages)):
-    print(userInput)
     information = reader.pages[PageNr].extract_text()
     redactUserInput(userInput)
     page = document[PageNr]

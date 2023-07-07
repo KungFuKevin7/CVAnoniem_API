@@ -233,7 +233,18 @@ namespace REST_API.Controller
         [ActionName("resume/redact-resume")]
         public int Redact(int userID, string toRedact) 
         {
-            Redactor.Redact(userID, toRedact);
+            string censoredResumeLoc = Redactor.Redact(userID, toRedact);
+            int offerIDOfUser = OfferRepo.GetByID(userID)[0].OfferID;
+            Resume updatedResume =
+                new Resume
+                {
+                    ResumeID = 0,
+                    FullResume = $"PDF-testopslag\\{userID}.pdf",
+                    CensoredResume = censoredResumeLoc,
+                    OfferID = offerIDOfUser
+                };
+            
+            ResumeRepo.Update(updatedResume,offerIDOfUser);
             return 200;
         }
     }

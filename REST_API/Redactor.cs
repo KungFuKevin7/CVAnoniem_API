@@ -4,7 +4,7 @@ namespace REST_API
 {
     public class Redactor
     {
-        public static void Redact(int userID, string toRedact) 
+        public static string Redact(int userID, string toRedact) 
         {
 
             ProcessStartInfo proc = new ProcessStartInfo();
@@ -24,6 +24,7 @@ namespace REST_API
                     Console.WriteLine(result);
                 }
             }
+            return $"PDF-testopslag\\Censored{userID}.pdf";
         }
     }
 }
