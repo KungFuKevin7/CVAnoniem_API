@@ -228,5 +228,13 @@ namespace REST_API.Controller
 
             return 0;
         }
+
+        [HttpGet]
+        [ActionName("resume/redact-resume")]
+        public int Redact(int userID, string toRedact) 
+        {
+            Redactor.Redact(userID, toRedact);
+            return 200;
+        }
     }
 }
