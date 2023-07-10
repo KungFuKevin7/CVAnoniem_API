@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using REST_API.Controller;
 using REST_API.Model;
 using System;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace REST_API.Repository
 {
@@ -41,24 +42,32 @@ namespace REST_API.Repository
             return Offers;
         }
 
+        public List<Offer> GetLimit(int limit)
+        {
+            string Query = $@"SELECT * FROM Offer LIMIT @Limit;";
+            List<Offer> Offers = con.Query<Offer>(Query, new
+            {
+                Limit = limit
+            }).ToList();
+            con.Close();
+            return Offers;
+        }
+
         public List<Offer> GetByID(int id)
         {
-            string Query = $@"SELECT * FROM Offer WHERE JobSeekerID = @JobSeekerID;";
-            try
-            {
-                IEnumerable<Offer> offer = con.Query<Offer>(Query,
+            MySqlConnection conn = new MySqlConnection(
+            ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString);
+            
+            System.Console.WriteLine(1);
+            string Query = $@"SELECT * FROM Offer WHERE JobSeekerID = @JobID;";
+            IEnumerable<Offer> offer = conn.Query<Offer>(Query,
                 new
                 {
-                    JobSeekerID = id
+                    JobID = id
                 });
-                con.Close();
-                return offer.ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return new List<Offer>();
-            }
+            conn.Close();
+            System.Console.WriteLine(7);
+            return offer.ToList();
         }
 
         
@@ -95,12 +104,17 @@ namespace REST_API.Repository
 
         public int UserHasOffer(int JobseekerID) 
         {
+
+            MySqlConnection conn = new MySqlConnection(
+            ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString);
+
+            System.Console.WriteLine(3);
             string Query = $@"SELECT OfferID 
                              FROM Offer
                              WHERE JobSeekerID = @JobseekerID";
-            int Result = con.ExecuteScalar<int>(Query, new
+            int Result = conn.ExecuteScalar<int>(Query, new
             {
-                JobSeekerID = JobseekerID
+                JobseekerID
             });
             con.Close();    
             return Result;

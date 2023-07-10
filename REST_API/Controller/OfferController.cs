@@ -18,10 +18,10 @@ namespace REST_API.Controller
     public class OfferController : ControllerBase
     {
         public static OfferRepository OfferRepo = new OfferRepository();
-
+        public static ResumeController resumeController = new ResumeController();   
         public static List<Offer> offersCollection = new List<Offer>();
+        
 
-        public static ResumeController resumeController = new ResumeController();
 
         /// <summary>
         /// Adds offer along with resume to database and file storage
@@ -33,14 +33,18 @@ namespace REST_API.Controller
         [ActionName("offer")]
         public HttpStatusCode Add(IFormFile file, string offer)
         {
-            //System.Console.WriteLine(offer);
+            System.Console.WriteLine("got here");
             Offer offerRec = JsonSerializer.Deserialize<Offer>(offer);
 
-            Console.WriteLine(offerRec.Province);
-            Console.WriteLine(file.FileName);
-            
+
+
+            System.Console.WriteLine(offerRec.Province);
+            System.Console.WriteLine(file.FileName);
+
             int offerID = OfferRepo.Add(offerRec);
             resumeController.AddTest(file, offerRec.JobSeekerID, offerID);
+
+            //OfferRepo.AddOrUpdate(offerRec, file);
             return HttpStatusCode.OK;
 
         }
@@ -64,12 +68,11 @@ namespace REST_API.Controller
         /// <returns></returns>
         [HttpPut]
         [ActionName("offer")]
-        public void Update(IFormFile file ,string updatedOffer)
+        public void Update(IFormFile file, string updatedOffer)
         {
             Offer offer = JsonSerializer.Deserialize<Offer>(updatedOffer);
             OfferRepo.Update(offer, offer.OfferID);
             resumeController.UpdateTest(file, offer.JobSeekerID, offer.OfferID);
-
         }
 
         /// <summary>
@@ -90,6 +93,15 @@ namespace REST_API.Controller
         /// </summary>
         /// <param name="userid">id of user that owns the offer</param>
         /// <returns>existing offer in json format</returns>
+        [HttpGet]
+        [ActionName("offer/limit-offers-list")]
+        public string GetOffersList(int limit)
+        {
+            offersCollection = OfferRepo.GetLimit(limit);   
+            var json = JsonSerializer.Serialize(offersCollection);
+            return json;
+        }
+
         [HttpGet]
         [ActionName("offer")]
         public string GetOfferByID(int userid) 

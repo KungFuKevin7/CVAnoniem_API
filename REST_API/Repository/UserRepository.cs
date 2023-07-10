@@ -17,7 +17,6 @@ namespace REST_API.Repository
             string Query = $@"SELECT * FROM Users
                               WHERE EmailAddress = @EmailAddress AND
                               Password = @Password";
-          
             var user = con.QueryFirstOrDefault<User>(Query, new
             {
                 EmailAddress = email,

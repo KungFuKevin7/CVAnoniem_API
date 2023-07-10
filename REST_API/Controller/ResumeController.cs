@@ -76,10 +76,9 @@ namespace REST_API.Controller
         /// <returns>PDF file in bytestream</returns>
         [HttpGet]
         [ActionName("resume")]
-        public IActionResult GetResumeByID(int userID)
+        public IActionResult GetResumeByID(int offerID)
         {
-            int offerID = OfferRepo.UserHasOffer(userID);
-
+            
             List<Resume> resume = ResumeRepo.GetByID(offerID);
 
             var stream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].CensoredResume), FileMode.Open);
@@ -154,8 +153,10 @@ namespace REST_API.Controller
         [ActionName("resume/user-has-resume")]
         public int GetUserHasResume(int userID)
         {
-            int offerID = OfferRepo.UserHasOffer(userID);
-            return ResumeRepo.GetByID(offerID).Count;
+            //int offerID = OfferRepo.UserHasOffer(userID);
+            //return ResumeRepo.GetByID(offerID).Count;
+
+            return 1;
         }
 
         /// <summary>
