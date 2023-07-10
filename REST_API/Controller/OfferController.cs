@@ -22,7 +22,6 @@ namespace REST_API.Controller
         public static List<Offer> offersCollection = new List<Offer>();
         
 
-        public static ResumeController resumeController = new ResumeController();
 
         [HttpPost]
         [ActionName("offer")]
@@ -65,6 +64,15 @@ namespace REST_API.Controller
         public string GetOffersList()
         {
             offersCollection = OfferRepo.Get();
+            var json = JsonSerializer.Serialize(offersCollection);
+            return json;
+        }
+
+        [HttpGet]
+        [ActionName("offer/limit-offers-list")]
+        public string GetOffersList(int limit)
+        {
+            offersCollection = OfferRepo.GetLimit(limit);   
             var json = JsonSerializer.Serialize(offersCollection);
             return json;
         }

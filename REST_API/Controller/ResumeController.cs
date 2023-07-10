@@ -54,12 +54,10 @@ namespace REST_API.Controller
 
         [HttpGet]
         [ActionName("resume")]
-        public IActionResult GetResumeByID(int userID)
+        public IActionResult GetResumeByID(int offerID)
         {
-            //System.Console.WriteLine("got here");
-            //uitgecomment omdat server niet draait op het moment
-            //int offerID = OfferRepo.UserHasOffer(userID);
-            List<Resume> resume = ResumeRepo.GetByID(userID);
+            
+            List<Resume> resume = ResumeRepo.GetByID(offerID);
 
             var stream = new FileStream(Path.Combine(Environment.CurrentDirectory, resume[0].CensoredResume), FileMode.Open);
 

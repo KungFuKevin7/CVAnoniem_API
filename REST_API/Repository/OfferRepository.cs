@@ -42,6 +42,17 @@ namespace REST_API.Repository
             return Offers;
         }
 
+        public List<Offer> GetLimit(int limit)
+        {
+            string Query = $@"SELECT * FROM Offer LIMIT @Limit;";
+            List<Offer> Offers = con.Query<Offer>(Query, new
+            {
+                Limit = limit
+            }).ToList();
+            con.Close();
+            return Offers;
+        }
+
         public List<Offer> GetByID(int id)
         {
             MySqlConnection conn = new MySqlConnection(
@@ -93,11 +104,15 @@ namespace REST_API.Repository
 
         public int UserHasOffer(int JobseekerID) 
         {
+
+            MySqlConnection conn = new MySqlConnection(
+            ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString);
+
             System.Console.WriteLine(3);
             string Query = $@"SELECT OfferID 
                              FROM Offer
                              WHERE JobSeekerID = @JobseekerID";
-            int Result = con.ExecuteScalar<int>(Query, new
+            int Result = conn.ExecuteScalar<int>(Query, new
             {
                 JobseekerID
             });
