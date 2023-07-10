@@ -23,8 +23,6 @@ public class Program
         var app = builder.Build();
 
         
-        //app.Map
-        //app.MapGet("/", () => "Hello World!");
 
         app.UseCors();
         app.MapControllers();

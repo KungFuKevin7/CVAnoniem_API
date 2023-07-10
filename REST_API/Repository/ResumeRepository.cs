@@ -7,7 +7,7 @@ namespace REST_API.Repository
     public class ResumeRepository : IRepository<Resume>
     {
         /// <summary>
-        /// Using à single instance to connect to database.
+        /// Using a single instance to connect to database.
         /// </summary>
         public static MySqlConnection con = DBConnection.getInstance()
                                                   .GetConnectionMSQL();

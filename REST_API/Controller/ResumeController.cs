@@ -21,14 +21,22 @@ namespace REST_API.Controller
 
         public static List<Resume> resumeCollection = new List<Resume>();
 
+        /// <summary>
+        /// Adds resume to the database
+        /// </summary>
+        /// <param name="resume">resume item to be added</param>
         [HttpPost]
         [ActionName("resume")]
         public void Add([FromBody] Resume resume)
         {
-            resumeCollection.Add(resume);
+            //resumeCollection.Add(resume);
             ResumeRepo.Add(resume);
         }
 
+        /// <summary>
+        /// Deletes resume item with corresponding id
+        /// </summary>
+        /// <param name="id">id of resume item to be deleted</param>
         [HttpDelete]
         [ActionName("resume")]
         public void Delete(int id)
@@ -36,6 +44,11 @@ namespace REST_API.Controller
             ResumeRepo.Delete(id);
         }
 
+        /// <summary>
+        /// Updates a resume item with corresponding id
+        /// </summary>
+        /// <param name="updatedResume">The updated resume</param>
+        /// <param name="id">The corresponding id of resume</param>
         [HttpPut]
         [ActionName("resume")]
         public void Update(Resume updatedResume, int id)
@@ -43,6 +56,10 @@ namespace REST_API.Controller
             ResumeRepo.Update(updatedResume, id);
         }
 
+        /// <summary>
+        /// Full list of all resume items in database
+        /// </summary>
+        /// <returns>list of resumes in json format</returns>
         [HttpGet]
         [ActionName("resume/full-resume-list")]
         public string GetResumeList()
@@ -52,12 +69,15 @@ namespace REST_API.Controller
             return json;
         }
 
+        /// <summary>
+        /// Gets censored resume from user with corresponding userid
+        /// </summary>
+        /// <param name="userID">id of resume owner</param>
+        /// <returns>PDF file in bytestream</returns>
         [HttpGet]
         [ActionName("resume")]
         public IActionResult GetResumeByID(int userID)
         {
-            //System.Console.WriteLine("got here");
-            //uitgecomment omdat server niet draait op het moment
             int offerID = OfferRepo.UserHasOffer(userID);
 
             List<Resume> resume = ResumeRepo.GetByID(offerID);
@@ -68,6 +88,12 @@ namespace REST_API.Controller
 
         }
 
+        /// <summary>
+        /// Decides whether the full resume or censored resume should be gotten
+        /// </summary>
+        /// <param name="offerID">offerID to get resume from</param>
+        /// <param name="userID">Id of user attempting to view Resume</param>
+        /// <returns>full or censored resume depending on user's permissions</returns>
         [HttpGet]
         [ActionName("resume/for-offer")]
         public IActionResult GetResumeByOfferID(int offerID, int userID)
@@ -101,7 +127,11 @@ namespace REST_API.Controller
             return new FileStreamResult(Filestream, "application/pdf");
         }
 
-
+        /// <summary>
+        /// Gets Full Resume by userID
+        /// </summary>
+        /// <param name="userID">ID of user that owns a resume</param>
+        /// <returns>full resume pdf in bytestream</returns>
         [HttpGet]
         [ActionName("resume/full-resume")]
         public IActionResult GetFullResumeByOfferID(int userID)
@@ -115,7 +145,11 @@ namespace REST_API.Controller
             return new FileStreamResult(Fullstream, "application/pdf");
         }
 
-
+        /// <summary>
+        /// Checks whether user has a resume
+        /// </summary>
+        /// <param name="userID">id of user to check</param>
+        /// <returns>0 if user has no resume, else 1</returns>
         [HttpGet]
         [ActionName("resume/user-has-resume")]
         public int GetUserHasResume(int userID)
@@ -124,22 +158,22 @@ namespace REST_API.Controller
             return ResumeRepo.GetByID(offerID).Count;
         }
 
-
+        /// <summary>
+        /// Add resume to filesystem, and the database
+        /// </summary>
+        /// <param name="file">file to be added to database</param>
+        /// <param name="userID">id of user that owns the resume</param>
+        /// <param name="offerID">offerid connected to the resume</param>
+        /// <returns>1 if transmission was successful, else 0</returns>
         public int AddTest(IFormFile file, int userID, int offerID)
         {
             Resume resume = new Resume();
 
             var File = file;
-            System.Console.WriteLine(File.FileName + File.ContentType + " " + userID);
-
-            if (File.Length > 2000000)
-            {
-                return 2;
-            }
+            //System.Console.WriteLine(File.FileName + File.ContentType + " " + userID);
 
             if (File.ContentType == "application/pdf")
             {
-
                 if (file.Length > 0)
                 {
                     // haal slashes uit de filenaam
@@ -154,7 +188,7 @@ namespace REST_API.Controller
                     resume.FullResume = localFilePath;
                     resume.CensoredResume = localFilePath;
                     resume.OfferID = offerID;
-                    System.Console.WriteLine("add");
+                   // System.Console.WriteLine("add");
 
                     ResumeRepo.Add(resume);
                     // zet filepath en andere data in database
@@ -166,30 +200,31 @@ namespace REST_API.Controller
             return 0;
         }
 
+        /// <summary>
+        /// Update already existing resume in filesystem, and in the database
+        /// </summary>
+        /// <param name="file">file to be added to database</param>
+        /// <param name="userID">id of user that owns the resume</param>
+        /// <param name="offerID">offerid connected to the resume</param>
+        /// <returns>1 if transmission was successful, else 0</returns>
         public int UpdateTest(IFormFile file, int userID, int offerID)
         {
             Resume resume = new Resume();
 
-            var File = file;
-            System.Console.WriteLine(File.FileName + File.ContentType + " " + userID);
+            System.Console.WriteLine(file.FileName + file.ContentType + " " + userID);
 
-            if (File.Length > 2000000)
+
+            if (file.ContentType == "application/pdf")
             {
-                return 2;
-            }
-
-            if (File.ContentType == "application/pdf")
-            {
-
                 if (file.Length > 0)
                 {
                     // haal slashes uit de filenaam
-                    string untrustedFileName = Path.GetFileName(File.FileName);
+                    string untrustedFileName = Path.GetFileName(file.FileName);
                     string localFilePath = @"PDF-testopslag\" + userID + ".pdf";
                     string filePath = Path.Combine(Environment.CurrentDirectory, localFilePath);
                     using (Stream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                     {
-                        File.CopyTo(fileStream);
+                        file.CopyTo(fileStream);
                         fileStream.Close();
                     }
                     resume.FullResume = localFilePath;
@@ -207,11 +242,17 @@ namespace REST_API.Controller
             return 0;
         }
 
+        /// <summary>
+        /// Check whether the file is too big in size to be added to database 
+        /// </summary>
+        /// <param name="file">file that needs to be checked</param>
+        /// <returns>2 if file is too big, 1
+        /// if size is right and in pdf format
+        /// else 0</returns>
         [HttpPost]
         [ActionName("resume/check")]
         public int CheckFile(IFormFile file)
         {
-            
             // do checks on file before uploading to server
             var File = file;
             int maxSize = 2000000;
@@ -229,6 +270,12 @@ namespace REST_API.Controller
             return 0;
         }
 
+        /// <summary>
+        /// redacts resume of owner, with the given words
+        /// </summary>
+        /// <param name="userID">id of resume owner</param>
+        /// <param name="toRedact">Information that needs to be redacted</param>
+        /// <returns>200 if successful</returns>
         [HttpGet]
         [ActionName("resume/redact-resume")]
         public int Redact(int userID, string toRedact) 

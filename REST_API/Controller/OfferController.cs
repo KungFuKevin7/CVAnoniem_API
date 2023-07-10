@@ -23,6 +23,12 @@ namespace REST_API.Controller
 
         public static ResumeController resumeController = new ResumeController();
 
+        /// <summary>
+        /// Adds offer along with resume to database and file storage
+        /// </summary>
+        /// <param name="file">file to be added to file storage</param>
+        /// <param name="offer">offer to be added to database</param>
+        /// <returns></returns>
         [HttpPost]
         [ActionName("offer")]
         public HttpStatusCode Add(IFormFile file, string offer)
@@ -39,6 +45,10 @@ namespace REST_API.Controller
 
         }
 
+        /// <summary>
+        /// Deletes offer with corresponding id
+        /// </summary>
+        /// <param name="id">id of offer to be deleted</param>
         [HttpDelete]
         [ActionName("offer")]
         public void Delete(int id)
@@ -46,6 +56,12 @@ namespace REST_API.Controller
             OfferRepo.Delete(id);
         }
 
+        /// <summary>
+        /// Updates existing offer along with resume
+        /// </summary>
+        /// <param name="file">file to be updated to file storage</param>
+        /// <param name="updatedOffer">offer to be updated to database</param>
+        /// <returns></returns>
         [HttpPut]
         [ActionName("offer")]
         public void Update(IFormFile file ,string updatedOffer)
@@ -56,6 +72,10 @@ namespace REST_API.Controller
 
         }
 
+        /// <summary>
+        /// Gets all offers from database
+        /// </summary>
+        /// <returns>All existing offers in json format</returns>
         [HttpGet]
         [ActionName("offer/all-offers-list")]
         public string GetOffersList()
@@ -65,6 +85,11 @@ namespace REST_API.Controller
             return json;
         }
 
+        /// <summary>
+        /// Gets offer that a user owns
+        /// </summary>
+        /// <param name="userid">id of user that owns the offer</param>
+        /// <returns>existing offer in json format</returns>
         [HttpGet]
         [ActionName("offer")]
         public string GetOfferByID(int userid) 
@@ -73,6 +98,11 @@ namespace REST_API.Controller
             return json;
         }
 
+        /// <summary>
+        /// Handles the search functionality
+        /// </summary>
+        /// <param name="query">search query from user</param>
+        /// <returns>offers that match the search query</returns>
         [HttpGet]
         [ActionName("offer/search-offers")]
         public string GetOfferByInput(string query)
@@ -82,7 +112,11 @@ namespace REST_API.Controller
             return json;
         }
 
-
+        /// <summary>
+        /// Checks whether user has an offer
+        /// </summary>
+        /// <param name="userid">id of user to check</param>
+        /// <returns>OfferID if User has offer</returns>
         [HttpGet]
         [ActionName("offer/user-has-offer")]
         public int GetUserHasOffer(int userid) 
