@@ -95,15 +95,26 @@ def redactUserInput(userInfo):
         CensoredData.append(info)
         CensorData()
 
+def getNameAndMail():
+    textArr = information.split('\n')
+    #Redact Name from file
+    RedactWords(textArr[0])
+    
+    #search for emailaddresses
+    for text in textArr:
+        if "@" in text:
+            CensoredData.append(text)
+    CensorData()
 
 for i in range(len(reader.pages)):
     information = reader.pages[PageNr].extract_text()
     redactUserInput(userInput)
     page = document[PageNr]
+    if i == 0:
+        getNameAndMail()
 
     getEducation()
     findDates()
-
     getImageFromPDF()
     page.apply_redactions()
     PageNr = PageNr + 1

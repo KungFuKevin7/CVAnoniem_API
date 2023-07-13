@@ -1,5 +1,6 @@
 ﻿namespace REST_API
 {
+    //Repository Pattern
     public interface IRepository<T>
     {
         /// <summary>
