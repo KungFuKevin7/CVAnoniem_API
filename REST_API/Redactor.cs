@@ -6,12 +6,17 @@ namespace REST_API
     {
         public static string Redact(int userID, string toRedact) 
         {
-
+            
+            toRedact = toRedact.Replace(" ", ",");
+            
             ProcessStartInfo proc = new ProcessStartInfo();
 
-            proc.FileName = "C:\\Python310\\python.exe";
-            proc.Arguments = $"C:\\Users\\kevin\\source\\repos\\REST_API\\REST_API\\PDFer.py " +
-                             $"{userID} \"{toRedact}\"";
+            //proc.FileName = "C:\\Python310\\python.exe";
+            // zet hier de path naar je python.exe
+            proc.FileName = "C:\\Users\\rickw\\AppData\\Local\\Programs\\Python\\Python39\\python.exe";
+            proc.Arguments = Path.Combine(Environment.CurrentDirectory, $"PDFer.py " + $"{userID} \"{toRedact}\"");
+            //proc.Arguments = $"C:\\Users\\kevin\\source\\repos\\REST_API\\REST_API\\PDFer.py " +
+            //                 $"{userID} \"{toRedact}\"";
 
 
             proc.UseShellExecute = false;
