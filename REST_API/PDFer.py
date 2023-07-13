@@ -1,14 +1,19 @@
+import os
 import fitz
 import PyPDF2
 import re
 import sys
 
 
+
+
 PageNr = 0
 userID = sys.argv[1]
 userInput = sys.argv[2]
-filePath = f"C:\\Users\\kevin\\source\\repos\\REST_API\\REST_API\\PDF-testopslag\\{userID}.pdf"
+filePath = os.getcwd() + f"\\PDF-testopslag\\{userID}.pdf"
 CensoredData = []
+
+
 
 reader = PyPDF2.PdfReader(filePath)
 information = reader.pages[PageNr].extract_text()
@@ -72,6 +77,8 @@ def RedactWords(Word):
 #Redact the information
 def CensorData():
     for data in CensoredData:
+        if data == "":
+            continue
         rl = page.search_for(f"{data}")
     
     for rect in rl:
@@ -89,7 +96,9 @@ def getEducation():
 
 
 def redactUserInput(userInfo):
+
     myList = userInfo.split(",")
+    
     for info in myList:
         #print(info)
         CensoredData.append(info)
@@ -120,8 +129,8 @@ for i in range(len(reader.pages)):
     PageNr = PageNr + 1
 
 #Save the redacted file as another pdf
-document.save(f"C:\\Users\\kevin\\source\\repos\\REST_API\\REST_API\\PDF-testopslag\\Censored{userID}.pdf")
-#document.save("C:\\Users\\kevin\\source\\repos\\RunPythonTest\\RunPythonTest\\CensoredFile.pdf")
+#document.save(f"C:\\Users\\kevin\\source\\repos\\REST_API\\REST_API\\PDF-testopslag\\Censored{userID}.pdf")
+document.save((os.getcwd() + f"\\PDF-testopslag\\Censored{userID}.pdf"))
 print("Document successfully redacted")
 
 
